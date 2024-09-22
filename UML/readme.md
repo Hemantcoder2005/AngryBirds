@@ -20,31 +20,25 @@
    - **Precondition**: The game must be in the main menu or level selection mode.
    - **Postcondition**: The chosen level loads, showing the birds, pigs, and structures.
 
-### 3. **Create Custom Level**
-   - **Description**: The player creates a custom level with their choice of birds, pigs, and structures.
-   - **Actor**: Player
-   - **Precondition**: The custom level creation feature is unlocked or available.
-   - **Postcondition**: The game saves and loads the custom level for the player to play or edit.
-
-### 4. **Aim and Shoot**
+### 3. **Aim and Shoot**
    - **Description**: The player uses the catapult to aim and launch a bird towards the structure.
    - **Actor**: Player
    - **Precondition**: The player has control of the catapult and birds.
    - **Postcondition**: A bird is launched, and the game calculates its trajectory using the game physics engine.
 
-### 5. **Use Special Ability**
+### 4. **Use Special Ability**
    - **Description**: The player triggers a special ability for a specific bird type during flight.
    - **Actor**: Player
    - **Precondition**: The player must have launched a bird with a special ability.
    - **Postcondition**: The special ability is activated, causing additional damage or unique effects.
 
-### 6. **View Score**
+### 5. **View Score**
    - **Description**: The player views their score at the end of the level based on how many pigs were destroyed and how many birds were used.
    - **Actor**: Player
    - **Precondition**: The level must be completed.
    - **Postcondition**: The score is displayed, and the player can either replay the level or proceed to the next one.
 
-### 7. **End Game**
+### 6. **End Game**
    - **Description**: The player can choose to end the game or the game automatically ends after all levels are completed.
    - **Actor**: Player
    - **Precondition**: The player completes the final level or manually exits.
