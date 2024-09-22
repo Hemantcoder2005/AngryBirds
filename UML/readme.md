@@ -50,7 +50,6 @@
 
 - **Player → Start Game**: A player can start the game.
 - **Player → Select Level**: A player can choose a level to play.
-- **Player → Create Custom Level**: A player can create a custom level (optional).
 - **Player → Aim and Shoot**: A player can aim and launch a bird using the catapult.
 - **Player → Use Special Ability**: A player can trigger a bird's special ability after launching.
 - **Player → View Score**: A player can view the score at the end of each level.
@@ -65,7 +64,6 @@
 - **1 Player → 1 Start Game**
 - **1 Player → 1 Select Level**
 - **1 Player → 1..* Aim and Shoot**
-- **1 Player → 0..1 Create Custom Level**
 - **1 Game System → 1..* Use Special Ability**
 - **1 Game System → 1..* Calculate Physics**
 
