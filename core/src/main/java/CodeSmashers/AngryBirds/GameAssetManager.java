@@ -30,9 +30,9 @@ public class GameAssetManager implements Disposable {
     }
 
     private void queueAsset(String assetPath) {
-        if (assetPath.endsWith(".jpg")) {
+        if (assetPath.endsWith(".jpg") || assetPath.endsWith(".png")) {
             assetManager.load(assetPath, Texture.class);
-        } else if (assetPath.endsWith(".wav")) {
+        } else if (assetPath.endsWith(".wav") || assetPath.endsWith(".mp3")) {
             assetManager.load(assetPath, Sound.class);
         }
     }

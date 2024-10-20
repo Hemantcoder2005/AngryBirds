@@ -69,7 +69,7 @@ public class Intro implements Screen {
         progress = assetManager.getProgress();
         if (assetManager.update()){
             if(intro.isVideoCompleted() || skip){
-                game.getState().switchScreen(new MainMenuScreen());
+                game.getState().switchScreen(new MainMenuScreen(game));
                 return;
             }
         }
