@@ -8,7 +8,7 @@ import com.badlogic.gdx.InputProcessor;
 
 
 public class IntroInput implements InputProcessor {
-    private Intro introScreen;
+    private final Intro introScreen;
     public IntroInput(Intro introScreen){
         this.introScreen =introScreen;
     }
