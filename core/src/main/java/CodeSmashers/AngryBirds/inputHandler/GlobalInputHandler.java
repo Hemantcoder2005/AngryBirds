@@ -8,6 +8,7 @@ import com.badlogic.gdx.InputProcessor;
 
 public class GlobalInputHandler implements InputProcessor {
     protected boolean isMuted = true;
+    protected boolean MuteSoundEffect = false;
     private Main game;
     public GlobalInputHandler(Main game){
         this.game = game;
@@ -15,19 +16,26 @@ public class GlobalInputHandler implements InputProcessor {
     public boolean isMuted() {
         return isMuted;
     }
+    public boolean isMuteSoundEffect() {
+        return MuteSoundEffect;
+    }
 
     @Override
     public boolean keyDown(int keycode) {
-
+        System.out.println("Key pressed: " + keycode);
         if (keycode == Keys.M) {
             isMuted = !isMuted;
-            System.out.println("Muted: " + isMuted);
+            System.out.println("Muted: " + !isMuted);
             return true;
         }
         if(keycode == Keys.Q){
-            System.out.println("aloo1");
             game.dispose();
             Gdx.app.exit();
+        }
+        if(keycode == Keys.S){
+            MuteSoundEffect = !MuteSoundEffect;
+            System.out.println("Sound Effect Muted : "+ !MuteSoundEffect);
+            return true;
         }
         return false;
     }

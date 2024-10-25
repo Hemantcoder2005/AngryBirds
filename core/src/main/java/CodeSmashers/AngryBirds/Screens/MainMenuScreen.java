@@ -2,6 +2,7 @@ package CodeSmashers.AngryBirds.Screens;
 
 import CodeSmashers.AngryBirds.Main;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -37,10 +38,11 @@ public class MainMenuScreen implements Screen {
 
     public MainMenuScreen(Main game) {
         this.game = game;
+        System.out.println(game);
         this.batch = new SpriteBatch();
         this.stage = new Stage(new ScreenViewport());
         this.backgroundSound = new AudioPlayer("background.mp3",game.getAssets());
-        this.mouseClick = new AudioPlayer("mouseClicked.mp3",game.getAssets(),true);
+        this.mouseClick = new AudioPlayer("mouseClicked.wav",game.getAssets(),true);
         background = game.getAssets().getTexture(BaseDir + "background.png");
 
         Texture playButtonTexture = game.getAssets().getTexture(BaseDir + "play.png");
@@ -65,22 +67,22 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 mouseClick.playSoundEffect();  // Play click sound
-                // Add screen transition logic here
+                game.getState().switchScreen(new LevelSelector(game));
             }
         });
 
         exitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                mouseClick.playSoundEffect();  // Play click sound
+                mouseClick.playSoundEffect();
                 Gdx.app.exit();
             }
         });
 
-        Gdx.input.setInputProcessor(stage);
+//        game.getMuliplexer().addProcessor(stage);
 
         startImageAnimations();
-        backgroundSound.playBackgroundMusic();  // Play background music
+        backgroundSound.playBackgroundMusic();
     }
 
     private void startImageAnimations() {
@@ -93,13 +95,20 @@ public class MainMenuScreen implements Screen {
     @Override
     public void show() {
         game.getMuliplexer().addProcessor(stage);
+//        System.out.println("Global input = " + game.getGlobalInputHandler());
+        System.out.println("Current Input Processors:");
+        for (InputProcessor processor : game.getMuliplexer().getProcessors()) {
+            System.out.println(processor.getClass().getSimpleName());
+        }
     }
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+//        System.out.println(game.getGlobalInputHandler().isMuted() + " " + game.getGlobalInputHandler().isMuteSoundEffect());
+        backgroundSound.toggleMuteBackgroundMusic(game.getGlobalInputHandler().isMuted());
+        mouseClick.toggleMuteSoundEffect(game.getGlobalInputHandler().isMuteSoundEffect());
         batch.begin();
         float screenWidth = Gdx.graphics.getWidth();
         float screenHeight = Gdx.graphics.getHeight();
@@ -154,6 +163,8 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void hide() {
+        backgroundSound.stopBackgroundMusic();
+        game.getMuliplexer().removeProcessor(stage);
     }
 
     @Override
@@ -162,5 +173,6 @@ public class MainMenuScreen implements Screen {
         stage.dispose();
         backgroundSound.dispose();
         mouseClick.dispose();
+
     }
 }
