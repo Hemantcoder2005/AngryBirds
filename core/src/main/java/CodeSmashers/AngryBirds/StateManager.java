@@ -20,6 +20,7 @@ public class StateManager extends Game {
 
     public void switchScreen(Screen newScreen) {
         if (currentScreen != null) {
+            System.out.println(currentScreen);
             currentScreen.dispose();
             System.out.println("Disposing....");
         }

@@ -45,11 +45,14 @@ public class LevelSelector implements Screen {
         this.batch = new SpriteBatch();
         this.mouseClick = new AudioPlayer("mouseClicked.wav", game.getAssets(), true);
         this.scrollSound = new AudioPlayer("mouseClicked.wav", game.getAssets(), true);
-        this.backgroundSound = new AudioPlayer("level_background.wav", game.getAssets());
-        backgroundSound.playBackgroundMusic();
+        this.backgroundSound = new AudioPlayer("level_background.mp3", game.getAssets());
+
         loadAssets();
         createBackButton();
         createLevelButtons();
+        backgroundSound.playBackgroundMusic();
+        System.out.println("Background level Selector");
+
     }
 
     private void loadAssets() {
@@ -62,13 +65,14 @@ public class LevelSelector implements Screen {
         Drawable backDrawable = new TextureRegionDrawable(backTexture);
         backButton = new ImageButton(backDrawable);
         backButton.setSize(100, 100);
-        backButton.setPosition(20, Gdx.graphics.getHeight() - 120);
+        backButton.setPosition(Gdx.graphics.getBackBufferWidth() - 100 - 30, Gdx.graphics.getHeight() - 120);
         stage.addActor(backButton);
 
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 mouseClick.playSoundEffect();
+                backgroundSound.dispose();
                 game.getState().switchScreen(new MainMenuScreen(game));
             }
         });
@@ -108,7 +112,7 @@ public class LevelSelector implements Screen {
 
         ScrollPane scrollPane = new ScrollPane(buttonTable);
         scrollPane.setSize(Gdx.graphics.getWidth(), LEVEL_BUTTON_SIZE + 60);
-        scrollPane.setPosition(0, buttonY);
+        scrollPane.setPosition(10, buttonY - 50);
         scrollPane.setScrollingDisabled(false, true);
 
         scrollPane.addListener(new ClickListener() {
@@ -119,11 +123,13 @@ public class LevelSelector implements Screen {
         });
 
         stage.addActor(scrollPane);
+
     }
 
     @Override
     public void show() {
         game.getMuliplexer().addProcessor(stage);
+
     }
 
     @Override
@@ -152,8 +158,9 @@ public class LevelSelector implements Screen {
 
     @Override
     public void hide() {
+//        backgroundSound.stopBackgroundMusic();
         game.getMuliplexer().removeProcessor(stage);
-        this.backgroundSound.stopBackgroundMusic();
+
     }
 
     @Override

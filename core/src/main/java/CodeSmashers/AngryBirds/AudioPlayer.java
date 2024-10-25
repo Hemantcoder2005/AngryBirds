@@ -36,6 +36,7 @@ public class AudioPlayer {
 
     // Play background music
     public void playBackgroundMusic() {
+        System.out.println(backgroundMusic);
         System.out.println("Sound Effect = " + isSoundEffect + " back = "+ backgroundMusic);
         if (!isSoundEffect && backgroundMusic != null) {
             System.out.println("Background Music Started");
