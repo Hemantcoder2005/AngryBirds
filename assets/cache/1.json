@@ -3,18 +3,18 @@
   "birds": [
     {
       "imgPath": "GamePlay/Birds/angry_bird.png",
-      "x": 100.0,
-      "y": 100.0,
-      "width": 10.0,
-      "height": 10.0,
+      "x": 200.0,
+      "y": 200.0,
+      "width": 45.0,
+      "height": 45.0,
       "angle": 0.0
     }
   ],
   "pigs": [
     {
       "imgPath": "GamePlay/Pigs/old_pig.png",
-      "x": 1000.0,
-      "y": 450.0,
+      "x": 200.0,
+      "y": 200.0,
       "health": 3,
       "width": 30.0,
       "height": 30.0,
@@ -24,7 +24,7 @@
   "components": [
     {
       "imgPath": "GamePlay/Surroundings/block5.png",
-      "x": 850.0,
+      "x": 1000.0,
       "y": 130.0,
       "type": "wood",
       "durability": 5,

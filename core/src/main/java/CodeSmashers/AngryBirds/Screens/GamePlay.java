@@ -79,99 +79,89 @@ public class GamePlay implements Screen {
 
     @Override
     public void render(float delta) {
-        // Clear the screen
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // Begin the batch for drawing
         batch.begin();
-
-        // Draw the background
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        float scaleFactor = 0.2f;
-
-        // Draw birds
         for (Bird bird : levelCache.getBirds()) {
             Texture birdTexture = Textures.get(bird.getImgPath());
-            float birdWidth = birdTexture.getWidth() * scaleFactor;
-            float birdHeight = birdTexture.getHeight() * scaleFactor;
+            float originalWidth = birdTexture.getWidth();
+            float originalHeight = birdTexture.getHeight();
+            float aspectRatio = originalWidth / originalHeight;
 
-            // Calculate the center for rotation
-            float originX = birdWidth / 2; // Center X based on width
-            float originY = birdHeight / 2; // Center Y based on height
+            float desiredHeight = bird.getHeight() ;
+            float birdWidth = desiredHeight * aspectRatio;
+
+            float originX = birdWidth / 2;
+            float originY = desiredHeight / 2;
 
             batch.draw(
                 birdTexture,
-                bird.getX(), bird.getY(), // Position to draw the bird
-                originX, originY, // Set the origin for rotation to the center of the bird
+                bird.getX(), bird.getY(),
+                originX, originY,
                 birdWidth,
-                birdHeight,
+                desiredHeight,
                 1, 1,
-                bird.getAngle(), // Use the bird's angle for rotation
+                bird.getAngle(),
                 0, 0,
-                birdTexture.getWidth(), birdTexture.getHeight(),
+                (int)originalWidth, (int)originalHeight,
                 false, false
             );
 
-            // Optional: Update bird's angle if needed
             bird.setAngle(bird.getAngle() + 1);
         }
 
-        // Draw pigs
         for (Pig pig : levelCache.getPigs()) {
             Texture pigTexture = Textures.get(pig.getImgPath());
-            float pigWidth = pigTexture.getWidth() * scaleFactor;
-            float pigHeight = pigTexture.getHeight() * scaleFactor;
+            float pigWidth = pigTexture.getWidth() ;
+            float pigHeight = pigTexture.getHeight() ;
 
-            // Calculate the center for rotation
-            float originX = pigWidth / 2; // Center X based on width
-            float originY = pigHeight / 2; // Center Y based on height
+            float originX = pigWidth / 2;
+            float originY = pigHeight / 2;
 
             batch.draw(
                 pigTexture,
-                pig.getX(), pig.getY(), // Position to draw the pig
-                originX, originY, // Set the origin for rotation to the center of the pig
+                pig.getX(), pig.getY(),
+                originX, originY,
                 pigWidth,
                 pigHeight,
                 1, 1,
-                pig.getAngle(), // Use the pig's angle for rotation
+                pig.getAngle(),
                 0, 0,
                 pigTexture.getWidth(), pigTexture.getHeight(),
                 false, false
             );
 
-            // Optional: Update pig's angle if needed
             pig.setAngle(pig.getAngle() + 5);
         }
 
-        // Draw surroundings
         for (Surroundings surr : levelCache.getComponents()) {
             Texture surrTexture = Textures.get(surr.getImgPath());
-            float surrWidth = surrTexture.getWidth() * scaleFactor;
-            float surrHeight = surrTexture.getHeight() * scaleFactor;
+            float surrWidth = surrTexture.getWidth() ;
+            float surrHeight = surrTexture.getHeight() ;
 
-            // Calculate the center for rotation
-            float originX = surrWidth / 2; // Center X based on width
-            float originY = surrHeight / 2; // Center Y based on height
+            float originX = surrWidth / 2;
+            float originY = surrHeight / 2;
 
             batch.draw(
                 surrTexture,
-                surr.getX(), surr.getY(), // Position to draw the surroundings
-                originX, originY, // Set the origin for rotation to the center of the surroundings
+                surr.getX(), surr.getY(),
+                originX, originY,
                 surrWidth,
                 surrHeight,
                 1, 1,
-                0, // Assuming surroundings don't rotate
+                0,
                 0, 0,
                 surrTexture.getWidth(), surrTexture.getHeight(),
                 false, false
             );
         }
 
-        // End the batch after all drawing is done
         batch.end();
     }
+
 
 
     @Override
