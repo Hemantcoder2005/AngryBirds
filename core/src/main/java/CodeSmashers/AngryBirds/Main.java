@@ -17,13 +17,14 @@ public class Main extends Game {
     private final InputMultiplexer multiplexer = new InputMultiplexer();
     private StateManager state;
     private GameAssetManager assets;
-
+    private AudioManager audio;
     @Override
     public void create() {
         globalInputHandler = new GlobalInputHandler(this);
         multiplexer.addProcessor(globalInputHandler);
         batch = new SpriteBatch();
         state = new StateManager(this);
+        audio = new AudioManager();
         state.create();
         Gdx.input.setInputProcessor(multiplexer);
         System.out.println("StateManager initialized: " + (state != null));
@@ -68,6 +69,9 @@ public class Main extends Game {
 
     public GameAssetManager getAssets() {
         return assets;
+    }
+    public AudioManager getAudioManager() {
+        return audio;
     }
 
     public void setAssets(GameAssetManager assets) {

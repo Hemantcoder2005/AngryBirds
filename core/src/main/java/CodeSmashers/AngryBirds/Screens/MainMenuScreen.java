@@ -1,5 +1,6 @@
 package CodeSmashers.AngryBirds.Screens;
 
+import CodeSmashers.AngryBirds.AudioManager;
 import CodeSmashers.AngryBirds.Main;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
@@ -28,7 +29,7 @@ public class MainMenuScreen implements Screen {
     private final Stage stage;
     private final ImageButton playButton;
     private final ImageButton exitButton;
-    private final AudioPlayer backgroundSound;
+//    private final AudioPlayer backgroundSound;
     private final AudioPlayer mouseClick;
     private final String BaseDir = "MainMenu/";
     float imageHeight = 0;
@@ -41,7 +42,8 @@ public class MainMenuScreen implements Screen {
         System.out.println(game);
         this.batch = new SpriteBatch();
         this.stage = new Stage(new ScreenViewport());
-        this.backgroundSound = new AudioPlayer("background.mp3",game.getAssets());
+//        this.backgroundSound = new AudioPlayer("background.mp3",game.getAssets());
+
         this.mouseClick = new AudioPlayer("mouseClicked.wav",game.getAssets(),true);
         background = game.getAssets().getTexture(BaseDir + "background.png");
 
@@ -82,7 +84,7 @@ public class MainMenuScreen implements Screen {
 //        game.getMuliplexer().addProcessor(stage);
 
         startImageAnimations();
-        backgroundSound.playBackgroundMusic();
+//        backgroundSound.playBackgroundMusic();
     }
 
     private void startImageAnimations() {
@@ -94,6 +96,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void show() {
+        AudioManager.playBackgroundMusic("background.mp3", game.getAssets());
         game.getMuliplexer().addProcessor(stage);
 //        System.out.println("Global input = " + game.getGlobalInputHandler());
         System.out.println("Current Input Processors:");
@@ -107,7 +110,7 @@ public class MainMenuScreen implements Screen {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 //        System.out.println(game.getGlobalInputHandler().isMuted() + " " + game.getGlobalInputHandler().isMuteSoundEffect());
-        backgroundSound.toggleMuteBackgroundMusic(game.getGlobalInputHandler().isMuted());
+//        backgroundSound.toggleMuteBackgroundMusic(game.getGlobalInputHandler().isMuted());
         mouseClick.toggleMuteSoundEffect(game.getGlobalInputHandler().isMuteSoundEffect());
         batch.begin();
         float screenWidth = Gdx.graphics.getWidth();
@@ -163,7 +166,8 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void hide() {
-        backgroundSound.stopBackgroundMusic();
+//        backgroundSound.stopBackgroundMusic();
+        AudioManager.stopBackgroundMusic();
         game.getMuliplexer().removeProcessor(stage);
     }
 
@@ -171,7 +175,7 @@ public class MainMenuScreen implements Screen {
     public void dispose() {
         batch.dispose();
         stage.dispose();
-        backgroundSound.dispose();
+//        backgroundSound.dispose();
         mouseClick.dispose();
 
     }

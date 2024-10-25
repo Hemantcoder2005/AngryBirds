@@ -1,11 +1,11 @@
 package CodeSmashers.AngryBirds.Screens;
 
+import CodeSmashers.AngryBirds.AudioManager;
 import CodeSmashers.AngryBirds.AudioPlayer;
 import CodeSmashers.AngryBirds.GameAssetManager;
 import CodeSmashers.AngryBirds.HelperClasses.Level;
 import CodeSmashers.AngryBirds.Main;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -32,7 +32,6 @@ public class LevelSelector implements Screen {
     private SpriteBatch batch;
     private AudioPlayer mouseClick;
     private AudioPlayer scrollSound;
-    private AudioPlayer backgroundSound; // Sound effect for scrolling
     private Texture background;
     private Texture angryBird;
     private Texture backTexture;
@@ -45,14 +44,9 @@ public class LevelSelector implements Screen {
         this.batch = new SpriteBatch();
         this.mouseClick = new AudioPlayer("mouseClicked.wav", game.getAssets(), true);
         this.scrollSound = new AudioPlayer("mouseClicked.wav", game.getAssets(), true);
-        this.backgroundSound = new AudioPlayer("level_background.mp3", game.getAssets());
-
         loadAssets();
         createBackButton();
         createLevelButtons();
-        backgroundSound.playBackgroundMusic();
-        System.out.println("Background level Selector");
-
     }
 
     private void loadAssets() {
@@ -72,7 +66,6 @@ public class LevelSelector implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 mouseClick.playSoundEffect();
-                backgroundSound.dispose();
                 game.getState().switchScreen(new MainMenuScreen(game));
             }
         });
@@ -118,18 +111,17 @@ public class LevelSelector implements Screen {
         scrollPane.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                scrollSound.playSoundEffect(); // Play sound on scroll
+                scrollSound.playSoundEffect();
             }
         });
 
         stage.addActor(scrollPane);
-
     }
 
     @Override
     public void show() {
         game.getMuliplexer().addProcessor(stage);
-
+        AudioManager.playBackgroundMusic("level_background.mp3", game.getAssets());
     }
 
     @Override
@@ -158,9 +150,8 @@ public class LevelSelector implements Screen {
 
     @Override
     public void hide() {
-//        backgroundSound.stopBackgroundMusic();
+        AudioManager.stopBackgroundMusic();
         game.getMuliplexer().removeProcessor(stage);
-
     }
 
     @Override
@@ -169,6 +160,6 @@ public class LevelSelector implements Screen {
         stage.dispose();
         angryBird.dispose();
         mouseClick.dispose();
-        scrollSound.dispose(); // Dispose of scroll sound
+        scrollSound.dispose();
     }
 }
