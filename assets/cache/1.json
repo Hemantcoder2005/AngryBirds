@@ -4,44 +4,91 @@
     {
       "imgPath": "GamePlay/Birds/angry_bird.png",
       "x": 100.0,
-      "y": 200.0,
+      "y": 100.0,
       "Vx": 0.0,
       "Vy": 0.0
     },
     {
       "imgPath": "GamePlay/Birds/Blackbird.png",
       "x": 150.0,
-      "y": 250.0,
-      "Vx": 6.0,
-      "Vy": 8.0
+      "y": 100.0,
+      "Vx": 0.0,
+      "Vy": 0.0
     }
   ],
   "pigs": [
     {
-      "imgPath": "GamePlay/Pigs/Chef.png",
-      "x": 300.0,
-      "y": 200.0,
+      "imgPath": "GamePlay/Pigs/old_pig.png",
+      "x": 1000.0,
+      "y": 450.0,
       "health": 3
     },
     {
-      "imgPath": "GamePlay/Pigs/Scientist.png",
-      "x": 350.0,
-      "y": 220.0,
+      "imgPath": "GamePlay/Pigs/Pig.png",
+      "x": 900.0,
+      "y": 350.0,
       "health": 2
+    },
+    {
+      "imgPath": "GamePlay/Pigs/Minion.png",
+      "x": 900.0,
+      "y": 250.0,
+      "health": 1
+    },
+    {
+      "imgPath": "GamePlay/Pigs/Minion_stressed.png",
+      "x": 1000.0,
+      "y": 150.0,
+      "health": 1
     }
   ],
   "components": [
     {
-      "imgPath": "GamePlay/Surroundings/w1.png",
-      "x": 200.0,
-      "y": 180.0,
+      "imgPath": "GamePlay/Surroundings/block5.png",
+      "x": 850.0,
+      "y": 130.0,
       "type": "wood",
       "durability": 5
     },
     {
-      "imgPath": "GamePlay/Surroundings/w1.png",
-      "x": 200.0,
-      "y": 180.0,
+      "imgPath": "GamePlay/Surroundings/WoodBlock.png",
+      "x": 900.0,
+      "y": 130.0,
+      "type": "wood",
+      "durability": 5
+    },
+    {
+      "imgPath": "GamePlay/Surroundings/WoodBlock.png",
+      "x": 1000.0,
+      "y": 130.0,
+      "type": "wood",
+      "durability": 5
+    },
+    {
+      "imgPath": "GamePlay/Surroundings/block3.png",
+      "x": 950.0,
+      "y": 250.0,
+      "type": "wood",
+      "durability": 5
+    },
+    {
+      "imgPath": "GamePlay/Surroundings/block4.png",
+      "x": 1050.0,
+      "y": 300.0,
+      "type": "wood",
+      "durability": 5
+    },
+    {
+      "imgPath": "GamePlay/Surroundings/block4.png",
+      "x": 850.0,
+      "y": 300.0,
+      "type": "wood",
+      "durability": 5
+    },
+    {
+      "imgPath": "GamePlay/Surroundings/block5.png",
+      "x": 1000.0,
+      "y": 400.0,
       "type": "wood",
       "durability": 5
     }
