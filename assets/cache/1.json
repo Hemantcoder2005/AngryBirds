@@ -5,15 +5,9 @@
       "imgPath": "GamePlay/Birds/angry_bird.png",
       "x": 100.0,
       "y": 100.0,
-      "Vx": 0.0,
-      "Vy": 0.0
-    },
-    {
-      "imgPath": "GamePlay/Birds/Blackbird.png",
-      "x": 150.0,
-      "y": 100.0,
-      "Vx": 0.0,
-      "Vy": 0.0
+      "width": 10.0,
+      "height": 10.0,
+      "angle": 0.0
     }
   ],
   "pigs": [
@@ -21,25 +15,10 @@
       "imgPath": "GamePlay/Pigs/old_pig.png",
       "x": 1000.0,
       "y": 450.0,
-      "health": 3
-    },
-    {
-      "imgPath": "GamePlay/Pigs/Pig.png",
-      "x": 900.0,
-      "y": 350.0,
-      "health": 2
-    },
-    {
-      "imgPath": "GamePlay/Pigs/Minion.png",
-      "x": 900.0,
-      "y": 250.0,
-      "health": 1
-    },
-    {
-      "imgPath": "GamePlay/Pigs/Minion_stressed.png",
-      "x": 1000.0,
-      "y": 150.0,
-      "health": 1
+      "health": 3,
+      "width": 30.0,
+      "height": 30.0,
+      "angle": 0.0
     }
   ],
   "components": [
@@ -48,49 +27,20 @@
       "x": 850.0,
       "y": 130.0,
       "type": "wood",
-      "durability": 5
+      "durability": 5,
+      "width": 10000.0,
+      "height": 10000.0,
+      "angle": 0.0
     },
     {
-      "imgPath": "GamePlay/Surroundings/WoodBlock.png",
+      "imgPath": "GamePlay/Surroundings/WoodBlock1.png",
       "x": 900.0,
       "y": 130.0,
       "type": "wood",
-      "durability": 5
-    },
-    {
-      "imgPath": "GamePlay/Surroundings/WoodBlock.png",
-      "x": 1000.0,
-      "y": 130.0,
-      "type": "wood",
-      "durability": 5
-    },
-    {
-      "imgPath": "GamePlay/Surroundings/block3.png",
-      "x": 950.0,
-      "y": 250.0,
-      "type": "wood",
-      "durability": 5
-    },
-    {
-      "imgPath": "GamePlay/Surroundings/block4.png",
-      "x": 1050.0,
-      "y": 300.0,
-      "type": "wood",
-      "durability": 5
-    },
-    {
-      "imgPath": "GamePlay/Surroundings/block4.png",
-      "x": 850.0,
-      "y": 300.0,
-      "type": "wood",
-      "durability": 5
-    },
-    {
-      "imgPath": "GamePlay/Surroundings/block5.png",
-      "x": 1000.0,
-      "y": 400.0,
-      "type": "wood",
-      "durability": 5
+      "durability": 5,
+      "width": 10000.0,
+      "height": 10000.0,
+      "angle": 0.0
     }
   ]
 }

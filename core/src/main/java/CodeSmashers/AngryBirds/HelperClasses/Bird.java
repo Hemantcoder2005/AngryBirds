@@ -9,23 +9,28 @@ public class Bird {
     private float y;
     private float Vx;
     private float Vy;
+    private float width;
+    private float height;
+    private float angle;
     private Texture bird;
 
     public Bird() {
-        // You can initialize default values if necessary
-        this.imgPath = ""; // or some default image path
+        this.imgPath = "";
         this.x = 0;
         this.y = 0;
+        this.width = 50;
+        this.height = 50;
+        this.angle = 0;
     }
-    public Bird(String imgPath, float x, float y, float Vx, float Vy) {
+
+    public Bird(String imgPath, float x, float y, float width, float height) {
         this.imgPath = imgPath;
         this.x = x;
         this.y = y;
-        this.Vx = Vx;
-        this.Vy = Vy;
+        this.width = width;
+        this.height = height;
     }
 
-    // Getters
     public String getImgPath() {
         return imgPath;
     }
@@ -46,7 +51,18 @@ public class Bird {
         return Vy;
     }
 
-    // Setters
+    public float getWidth() {
+        return width;
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
+    public float getAngle() {
+        return angle;
+    }
+
     public void setImgPath(String imgPath) {
         this.imgPath = imgPath;
     }
@@ -67,4 +83,15 @@ public class Bird {
         Vy = vy;
     }
 
+    public void setWidth(float width) {
+        this.width = width;
+    }
+
+    public void setHeight(float height) {
+        this.height = height;
+    }
+
+    public void setAngle(float angle) {
+        this.angle = angle;
+    }
 }

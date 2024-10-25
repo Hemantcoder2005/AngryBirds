@@ -12,7 +12,10 @@ public class PigSerializer implements Json.Serializer<Pig> {
         json.writeValue("imgPath", pig.getImgPath());
         json.writeValue("x", pig.getX());
         json.writeValue("y", pig.getY());
+        json.writeValue("width", pig.getWidth());
+        json.writeValue("height", pig.getHeight());
         json.writeValue("health", pig.getHealth());
+        json.writeValue("angle", pig.getAngle());
         json.writeObjectEnd();
     }
 
@@ -21,7 +24,10 @@ public class PigSerializer implements Json.Serializer<Pig> {
         String imgPath = jsonData.getString("imgPath");
         float x = jsonData.getFloat("x");
         float y = jsonData.getFloat("y");
+        float width = jsonData.getFloat("width");
+        float height = jsonData.getFloat("height");
         int health = jsonData.getInt("health");
-        return new Pig(imgPath, x, y, health);
+        float angle = jsonData.getFloat("angle");
+        return new Pig(imgPath, x, y, width, height, health, angle);
     }
 }

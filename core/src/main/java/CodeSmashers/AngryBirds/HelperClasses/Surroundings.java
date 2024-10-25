@@ -6,18 +6,22 @@ public class Surroundings {
     private float y;
     private String type;
     private int durability;
-
+    private float width;
+    private float height;
+    private float angle;
 
     public Surroundings() {}
 
-    public Surroundings(String imgPath, float x, float y, String type, int durability) {
+    public Surroundings(String imgPath, float x, float y, String type, int durability, float width, float height, float angle) {
         this.imgPath = imgPath;
         this.x = x;
         this.y = y;
         this.type = type;
         this.durability = durability;
+        this.width = width;
+        this.height = height;
+        this.angle = angle;
     }
-
 
     public String getImgPath() {
         return imgPath;
@@ -59,12 +63,34 @@ public class Surroundings {
         this.durability = durability;
     }
 
-    // Method to check if the surroundings element is still intact
+    public float getWidth() {
+        return width;
+    }
+
+    public void setWidth(float width) {
+        this.width = width;
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
+    public void setHeight(float height) {
+        this.height = height;
+    }
+
+    public float getAngle() {
+        return angle;
+    }
+
+    public void setAngle(float angle) {
+        this.angle = angle;
+    }
+
     public boolean isIntact() {
         return durability > 0;
     }
 
-    // Method to reduce durability when it takes damage
     public void takeDamage(int damage) {
         durability = Math.max(durability - damage, 0);
     }

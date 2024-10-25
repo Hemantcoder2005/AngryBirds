@@ -14,6 +14,9 @@ public class SurroundingsSerializer implements Json.Serializer<Surroundings> {
         json.writeValue("y", surroundings.getY());
         json.writeValue("type", surroundings.getType());
         json.writeValue("durability", surroundings.getDurability());
+        json.writeValue("width", surroundings.getWidth());
+        json.writeValue("height", surroundings.getHeight());
+        json.writeValue("angle", surroundings.getAngle());
         json.writeObjectEnd();
     }
 
@@ -24,7 +27,9 @@ public class SurroundingsSerializer implements Json.Serializer<Surroundings> {
         float y = jsonData.getFloat("y");
         String surroundingsType = jsonData.getString("type");
         int durability = jsonData.getInt("durability");
-
-        return new Surroundings(imgPath, x, y, surroundingsType, durability);
+        float width = jsonData.getFloat("width");
+        float height = jsonData.getFloat("height");
+        float angle = jsonData.getFloat("angle");
+        return new Surroundings(imgPath, x, y, surroundingsType, durability, width, height, angle);
     }
 }
