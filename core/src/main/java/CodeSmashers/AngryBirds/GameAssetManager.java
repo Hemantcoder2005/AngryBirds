@@ -22,7 +22,7 @@ public class GameAssetManager implements Disposable {
     private final HashMap<String,HashMap<String,Object>> jsonFiles;
     public int levels = 0;
     public Map<String,Level> LevelChart;
-    Json json = new Json();
+    public Json json = new Json();
 
     public GameAssetManager() {
         this.assetManager = new AssetManager();
@@ -55,7 +55,7 @@ public class GameAssetManager implements Disposable {
             }
         } else if (assetPath.endsWith(".json")) {
             System.out.println(assetPath);
-            if(!assetPath.equals("user.json")) {
+            if(!assetPath.equals("user.json") && assetPath.contains("cache/")) {
                 System.out.println(assetPath);
                 levels++;
             }

@@ -1,9 +1,14 @@
 package CodeSmashers.AngryBirds.HelperClasses;
 
+import java.util.ArrayList;
+
 public class Level {
     private boolean locked;
     private int stars;
-    public Level(){}
+
+    public Level() {
+    }
+
     // Constructor
     public Level(boolean locked, int stars) {
         this.locked = locked;
@@ -20,4 +25,5 @@ public class Level {
 
 
     // Getters and setters can be added here if needed
+
 }

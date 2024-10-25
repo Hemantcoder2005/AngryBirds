@@ -99,6 +99,7 @@ public class LevelSelector implements Screen {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     mouseClick.playSoundEffect();
+                    game.getState().switchScreen(new GamePlay(game,1));
                 }
             });
         }

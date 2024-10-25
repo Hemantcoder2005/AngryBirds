@@ -1,0 +1,49 @@
+{
+  "background": "GamePlay/Levels/level1.png",
+  "birds": [
+    {
+      "imgPath": "GamePlay/Birds/angry_bird.png",
+      "x": 100.0,
+      "y": 200.0,
+      "Vx": 0.0,
+      "Vy": 0.0
+    },
+    {
+      "imgPath": "GamePlay/Birds/Blackbird.png",
+      "x": 150.0,
+      "y": 250.0,
+      "Vx": 6.0,
+      "Vy": 8.0
+    }
+  ],
+  "pigs": [
+    {
+      "imgPath": "GamePlay/Pigs/Chef.png",
+      "x": 300.0,
+      "y": 200.0,
+      "health": 3
+    },
+    {
+      "imgPath": "GamePlay/Pigs/Scientist.png",
+      "x": 350.0,
+      "y": 220.0,
+      "health": 2
+    }
+  ],
+  "components": [
+    {
+      "imgPath": "GamePlay/Surroundings/w1.png",
+      "x": 200.0,
+      "y": 180.0,
+      "type": "wood",
+      "durability": 5
+    },
+    {
+      "imgPath": "GamePlay/Surroundings/w1.png",
+      "x": 200.0,
+      "y": 180.0,
+      "type": "wood",
+      "durability": 5
+    }
+  ]
+}
