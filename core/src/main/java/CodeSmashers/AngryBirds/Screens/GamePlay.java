@@ -85,13 +85,18 @@ public class GamePlay implements Screen {
         batch.begin();
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
+        // Scale factor for birds, pigs, and surroundings
+        float birdScaleFactor = 0.9f; // Adjust this value as needed
+        float pigScaleFactor = 0.2f; // Adjust this value to change pig size
+        float surrScaleFactor = 3.0f; // Adjust this value for surroundings
+
         for (Bird bird : levelCache.getBirds()) {
             Texture birdTexture = Textures.get(bird.getImgPath());
             float originalWidth = birdTexture.getWidth();
             float originalHeight = birdTexture.getHeight();
             float aspectRatio = originalWidth / originalHeight;
 
-            float desiredHeight = bird.getHeight() ;
+            float desiredHeight = bird.getHeight() * birdScaleFactor;
             float birdWidth = desiredHeight * aspectRatio;
 
             float originX = birdWidth / 2;
@@ -115,8 +120,12 @@ public class GamePlay implements Screen {
 
         for (Pig pig : levelCache.getPigs()) {
             Texture pigTexture = Textures.get(pig.getImgPath());
-            float pigWidth = pigTexture.getWidth() ;
-            float pigHeight = pigTexture.getHeight() ;
+            float originalWidth = pigTexture.getWidth();
+            float originalHeight = pigTexture.getHeight();
+            float aspectRatio = originalWidth / originalHeight;
+
+            float pigWidth = originalWidth * pigScaleFactor; // Scale width
+            float pigHeight = pigWidth / aspectRatio; // Maintain aspect ratio
 
             float originX = pigWidth / 2;
             float originY = pigHeight / 2;
@@ -130,7 +139,7 @@ public class GamePlay implements Screen {
                 1, 1,
                 pig.getAngle(),
                 0, 0,
-                pigTexture.getWidth(), pigTexture.getHeight(),
+                (int)originalWidth,(int) originalHeight,
                 false, false
             );
 
@@ -139,8 +148,12 @@ public class GamePlay implements Screen {
 
         for (Surroundings surr : levelCache.getComponents()) {
             Texture surrTexture = Textures.get(surr.getImgPath());
-            float surrWidth = surrTexture.getWidth() ;
-            float surrHeight = surrTexture.getHeight() ;
+            float originalWidth = surrTexture.getWidth();
+            float originalHeight = surrTexture.getHeight();
+            float aspectRatio = originalWidth / originalHeight;
+
+            float surrWidth = originalWidth * surrScaleFactor; // Scale width
+            float surrHeight = surrWidth / aspectRatio; // Maintain aspect ratio
 
             float originX = surrWidth / 2;
             float originY = surrHeight / 2;
@@ -154,13 +167,14 @@ public class GamePlay implements Screen {
                 1, 1,
                 0,
                 0, 0,
-                surrTexture.getWidth(), surrTexture.getHeight(),
+                (int)originalWidth, (int)originalHeight,
                 false, false
             );
         }
 
         batch.end();
     }
+
 
 
 
