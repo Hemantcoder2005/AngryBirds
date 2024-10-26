@@ -28,7 +28,7 @@ public class GamePlay implements Screen {
     private HashMap<String, Texture> textures;
     private Main game;
     public float gravity = -100.6f;
-    public static final float PPM = 0.5f;
+    public static final float PPM = 1f;
     private World world;
     private Box2DDebugRenderer debugRenderer;
     private float windSpeed;
@@ -106,7 +106,7 @@ public class GamePlay implements Screen {
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(bird.getX() / PPM, bird.getY() / PPM);
         Body body = world.createBody(bodyDef);
-        createFixture(body, bird.getWidth(), bird.getHeight(), bird.getDensity(), bird.getFriction(), bird.getRestitution(),bird.getShape());
+        createFixture(body, bird.getWidth(), bird.getHeight(), bird.getDensity(), bird.getFriction(), bird.getRestitution(),bird.getShape(),bird.getScaleFactor());
         bird.setBody(body);
     }
 
@@ -115,7 +115,7 @@ public class GamePlay implements Screen {
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(pig.getX() / PPM, pig.getY() / PPM);
         Body body = world.createBody(bodyDef);
-        createFixture(body, pig.getWidth(), pig.getHeight(), pig.getDensity(), pig.getFriction(), pig.getRestitution(),pig.getShape());
+        createFixture(body, pig.getWidth(), pig.getHeight(), pig.getDensity(), pig.getFriction(), pig.getRestitution(),pig.getShape(),pig.getScaleFactor());
         pig.setBody(body);
     }
 
@@ -124,33 +124,37 @@ public class GamePlay implements Screen {
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(surroundings.getX() / PPM, surroundings.getY() / PPM);
         Body body = world.createBody(bodyDef);
-        createFixture(body, surroundings.getWidth(), surroundings.getHeight(), surroundings.getDensity(), surroundings.getFriction(), surroundings.getRestitution(),surroundings.getShape());
+        createFixture(body, surroundings.getWidth(), surroundings.getHeight(), surroundings.getDensity(), surroundings.getFriction(), surroundings.getRestitution(),surroundings.getShape(),surroundings.getScaleFactor());
         surroundings.setBody(body);
     }
 
-    private void createFixture(Body body, float width, float height, float density, float friction, float restitution, String shapeType) {
+    private void createFixture(Body body, float width, float height, float density, float friction, float restitution, String shapeType, float scaleFactor) {
         FixtureDef fixtureDef = new FixtureDef();
+
+        // Scale dimensions before applying to shape
+        float scaledWidth = width*scaleFactor;
+        float scaledHeight = height*scaleFactor;
 
         if ("circle".equals(shapeType)) {
             CircleShape shape = new CircleShape();
-            shape.setRadius(width / 2 / PPM); // Use width as the diameter for the circle
+            shape.setRadius((scaledWidth / 2) / PPM); // Use scaled width for circle radius
             fixtureDef.shape = shape;
         } else if ("rectangle".equals(shapeType)) {
             PolygonShape shape = new PolygonShape();
-            shape.setAsBox((width / 2) / PPM, (height / 2) / PPM);
+            shape.setAsBox((scaledWidth / 2) / PPM, (scaledHeight / 2) / PPM); // Use scaled dimensions
             fixtureDef.shape = shape;
-        }else if ("triangle".equals(shapeType)) {
+        } else if ("triangle".equals(shapeType)) {
             PolygonShape shape = new PolygonShape();
             Vector2[] vertices = new Vector2[3];
 
-            vertices[0] = new Vector2(-width / 2 / PPM, -height / 2 / PPM);
-            vertices[1] = new Vector2(width / 2 / PPM, -height / 2 / PPM);
-            vertices[2] = new Vector2(0, height / 2 / PPM);
+            // Scale and set vertices for triangle
+            vertices[0] = new Vector2(-scaledWidth / 2 / PPM, -scaledHeight / 2 / PPM);
+            vertices[1] = new Vector2(scaledWidth / 2 / PPM, -scaledHeight / 2 / PPM);
+            vertices[2] = new Vector2(0, scaledHeight / 2 / PPM);
 
             shape.set(vertices);
             fixtureDef.shape = shape;
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("Unsupported shape type: " + shapeType);
         }
 
@@ -158,8 +162,8 @@ public class GamePlay implements Screen {
         fixtureDef.friction = friction;
         fixtureDef.restitution = restitution;
         body.createFixture(fixtureDef);
-
     }
+
 
     private void createFloor() {
         BodyDef floorDef = new BodyDef();
@@ -196,7 +200,7 @@ public class GamePlay implements Screen {
         batch.end();
 
         // Uncomment to enable debug rendering
-         debugRenderer.render(world, batch.getProjectionMatrix().cpy().scale(PPM, PPM, 0));
+        debugRenderer.render(world, batch.getProjectionMatrix().cpy().scale(PPM, PPM, 0));
     }
 
     private void renderBirds() {
