@@ -15,6 +15,15 @@ public class LevelCache {
     private ArrayList<Bird> birds;
     private ArrayList<Pig> pigs;
     private ArrayList<Surroundings> components;
+    private float floorY;
+
+    public float getFloorY() {
+        return floorY;
+    }
+
+    public void setFloorY(float floorY) {
+        this.floorY = floorY;
+    }
 
     public LevelCache() {
         this.birds = new ArrayList<>();

@@ -46,6 +46,8 @@ public class LevelCacheSerializer implements Json.Serializer<LevelCache> {
         String background = jsonData.getString("background", "");
         levelCache.setBackground(background);
 
+        float floorY = jsonData.getFloat("floorY");
+        levelCache.setFloorY(floorY);
         // Deserialize birds
         JsonValue birdsArray = jsonData.get("birds");
         for (JsonValue birdData : birdsArray) {

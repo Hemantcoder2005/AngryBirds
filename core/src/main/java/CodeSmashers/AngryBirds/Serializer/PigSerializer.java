@@ -16,6 +16,11 @@ public class PigSerializer implements Json.Serializer<Pig> {
         json.writeValue("height", pig.getHeight());
         json.writeValue("health", pig.getHealth());
         json.writeValue("angle", pig.getAngle());
+        json.writeValue("scaleFactor", pig.getScaleFactor());
+        json.writeValue("density", pig.getDensity());
+        json.writeValue("friction", pig.getFriction());
+        json.writeValue("restitution", pig.getRestitution());
+        json.writeValue("shape", pig.getShape());
         json.writeObjectEnd();
     }
 
@@ -28,6 +33,11 @@ public class PigSerializer implements Json.Serializer<Pig> {
         float height = jsonData.getFloat("height");
         int health = jsonData.getInt("health");
         float angle = jsonData.getFloat("angle");
-        return new Pig(imgPath, x, y, width, height, health, angle);
+        float scaleFactor = jsonData.getFloat("scaleFactor");
+        float density = jsonData.getFloat("density");
+        float friction = jsonData.getFloat("friction");
+        float restitution = jsonData.getFloat("restitution");
+        String shape = jsonData.getString("shape");
+        return new Pig(imgPath, x, y, angle, width, height, health, scaleFactor, density, friction, restitution,shape);
     }
 }
