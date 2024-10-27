@@ -34,6 +34,7 @@ public class Main extends Game {
     public void render() {
         if(state!=null) state.render();
         else Gdx.app.exit();
+        if(AudioManager.getCurrentMusic() != null) AudioManager.getCurrentMusic().toggleMuteBackgroundMusic(this.getGlobalInputHandler().isMuted());
     }
 
     @Override

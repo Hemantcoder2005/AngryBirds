@@ -10,12 +10,13 @@ import com.badlogic.gdx.video.VideoPlayerCreator;
 
 public class VideoPlayer extends ApplicationAdapter {
     SpriteBatch batch;
-    private double muted;
+    private double muted ;
     private com.badlogic.gdx.video.VideoPlayer videoPlayer;
     String path;
     private boolean isVideoCompleted;
 
     public VideoPlayer(String path) {
+
         this.path = path;
         this.isVideoCompleted = false;
     }
@@ -65,7 +66,7 @@ public class VideoPlayer extends ApplicationAdapter {
     }
 
     public void mute(boolean muted) {
-        if (!muted) this.muted = 0.0;
+        if (muted) this.muted = 0.0;
         else this.muted = 1.0;
     }
 

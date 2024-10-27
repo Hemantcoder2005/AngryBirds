@@ -110,7 +110,7 @@ public class MainMenuScreen implements Screen {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 //        System.out.println(game.getGlobalInputHandler().isMuted() + " " + game.getGlobalInputHandler().isMuteSoundEffect());
-//        backgroundSound.toggleMuteBackgroundMusic(game.getGlobalInputHandler().isMuted());
+
         mouseClick.toggleMuteSoundEffect(game.getGlobalInputHandler().isMuteSoundEffect());
         batch.begin();
         float screenWidth = Gdx.graphics.getWidth();

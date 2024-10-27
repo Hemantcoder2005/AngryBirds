@@ -45,36 +45,7 @@
     }
   ],
   "components": [
-    {
-      "imgPath": "GamePlay/Surroundings/block2.png",
-      "x": 850.0,
-      "y": 170.0,
-      "type": "wood",
-      "durability": 5,
-      "width": 208.0,
-      "height": 62.0,
-      "scaleFactor": 1,
-      "density": 0.8,
-      "friction": 1.0,
-      "restitution": 0.3,
-      "angle": 0.0,
-      "shape": "rectangle"
-    },
-    {
-      "imgPath": "GamePlay/Surroundings/WoodBlock1.png",
-      "x": 842.0,
-      "y": 251.0,
-      "type": "wood",
-      "durability": 5,
-      "width": 112.0,
-      "height": 126.0,
-      "scaleFactor": 0.8,
-      "density": 0.8,
-      "friction": 1.0,
-      "restitution": 0.3,
-      "angle": 0.0,
-      "shape": "rectangle"
-    },
+
     {
       "imgPath": "GamePlay/Surroundings/WoodBlock1.png",
       "x": 952.0,

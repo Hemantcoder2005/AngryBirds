@@ -7,7 +7,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 
 public class GlobalInputHandler implements InputProcessor {
-    protected boolean isMuted = true;
+    protected boolean isMuted = false;
     protected boolean MuteSoundEffect = false;
     private Main game;
     public GlobalInputHandler(Main game){
@@ -25,7 +25,7 @@ public class GlobalInputHandler implements InputProcessor {
         System.out.println("Key pressed: " + keycode);
         if (keycode == Keys.M) {
             isMuted = !isMuted;
-            System.out.println("Muted: " + !isMuted);
+            System.out.println("Muted: " + isMuted);
             return true;
         }
         if(keycode == Keys.Q){

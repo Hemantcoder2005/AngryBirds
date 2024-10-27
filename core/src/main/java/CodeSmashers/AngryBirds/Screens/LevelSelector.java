@@ -99,7 +99,7 @@ public class LevelSelector implements Screen {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     mouseClick.playSoundEffect();
-                    game.getState().switchScreen(new GamePlay(game,1));
+                    game.getState().switchScreen(new GamePlay(game,finalI));
                 }
             });
         }
@@ -130,13 +130,13 @@ public class LevelSelector implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        batch.begin();
-        batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch.end();
-
+            batch.begin();
+            batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            batch.end();
         stage.act(delta);
         stage.draw();
-    }
+        }
+
 
     @Override
     public void resize(int width, int height) {

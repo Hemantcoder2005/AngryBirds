@@ -1,5 +1,6 @@
 package CodeSmashers.AngryBirds.Screens;
 
+import CodeSmashers.AngryBirds.AudioPlayer;
 import CodeSmashers.AngryBirds.GameAssetManager;
 import CodeSmashers.AngryBirds.HelperClasses.Bird;
 import CodeSmashers.AngryBirds.HelperClasses.LevelCache;
@@ -12,28 +13,52 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.util.HashMap;
 
 public class GamePlay implements Screen {
+    public int levelNum ;
     private LevelCache levelCache;
     private Texture background;
     private GameAssetManager assetManager;
-    private SpriteBatch batch;
+    public SpriteBatch batch;
     private HashMap<String, Texture> textures;
-    private Main game;
+    public Main game;
     public float gravity = -100.6f;
     public static final float PPM = 1f;
     private World world;
     private Box2DDebugRenderer debugRenderer;
     private float windSpeed;
+    private PauseScreen pause;
+    public Boolean isPaused;
+    private String BASE_DIR = "Gameplay/";
+    private Texture pauseTexture;
+    private ImageButton pauseButton;
+    public AudioPlayer mouseClick;
+    public Stage stage;
+    private BitmapFont font;
+    private GlyphLayout layout;
+    private Boolean won;
+    private Boolean loose;
 
+    private Texture wonTexture;
+    private Texture lostTexture;
     public GamePlay(Main game, int levelNumber) {
+        this.levelNum = levelNumber;
         this.game = game;
         this.assetManager = game.getAssets();
         this.levelCache = new LevelCache();
@@ -44,9 +69,20 @@ public class GamePlay implements Screen {
         this.debugRenderer = new Box2DDebugRenderer();
         loadLevel(levelNumber);
         this.background = assetManager.getTexture(levelCache.getBackground());
+        this.isPaused = false;
+        this.pause = new PauseScreen(this);
+        this.mouseClick = new AudioPlayer("mouseClicked.wav", game.getAssets(), true);
+        this.stage = new Stage(new ScreenViewport());
+        this.font = new BitmapFont();  // Or you can use a custom font file
+        this.layout = new GlyphLayout();
+        this.won = false;
+        this.loose  = false;
+
         loadAllTextures();
         createBirdBodies();
         createFloor();
+        createPauseButton();
+
     }
 
     private void loadAllTextures() {
@@ -163,7 +199,44 @@ public class GamePlay implements Screen {
         fixtureDef.restitution = restitution;
         body.createFixture(fixtureDef);
     }
+    private void createPauseButton() {
+        pauseTexture = game.getAssets().getTexture("GamePlay/Levels/pause.png");
+        Drawable backDrawable = new TextureRegionDrawable(pauseTexture);
+        pauseButton = new ImageButton(backDrawable);
+        pauseButton.setSize(100, 100);
+        pauseButton.setPosition(20, Gdx.graphics.getHeight() - 120);
+        stage.addActor(pauseButton);
 
+        pauseButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                mouseClick.playSoundEffect();
+                System.out.println("Game paused = " + isPaused);
+                isPaused = true;
+                pause.show();
+                game.getMuliplexer().removeProcessor(stage);
+            }
+        });
+    }
+//    private void createWonButton() {
+//        wonButton = game.getAssets().getTexture("GamePlay/Levels/won.png");
+//        Drawable backDrawable = new TextureRegionDrawable(pauseTexture);
+//        pauseButton = new ImageButton(backDrawable);
+//        pauseButton.setSize(100, 100);
+//        pauseButton.setPosition(20, Gdx.graphics.getHeight() - 120);
+//        stage.addActor(pauseButton);
+//
+//        pauseButton.addListener(new ClickListener() {
+//            @Override
+//            public void clicked(InputEvent event, float x, float y) {
+//                mouseClick.playSoundEffect();
+//                System.out.println("Game paused = " + isPaused);
+//                isPaused = true;
+//                pause.show();
+//                game.getMuliplexer().removeProcessor(stage);
+//            }
+//        });
+//    }
 
     private void createFloor() {
         BodyDef floorDef = new BodyDef();
@@ -180,28 +253,66 @@ public class GamePlay implements Screen {
 
         floorBody.createFixture(fixtureDef);
         floorShape.dispose();
+
     }
 
     @Override
     public void show() {
+        game.getMuliplexer().addProcessor(stage);
+
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        world.step(1 / 60f, 6, 2);
 
-        batch.begin();
-        batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        renderBirds();
-        renderPigs();
-        renderSurroundings();
-        batch.end();
+        if (!isPaused && !won && !loose) {
+            // Clear the screen
+            Gdx.gl.glClearColor(0, 0, 0, 1);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // Uncomment to enable debug rendering
-        debugRenderer.render(world, batch.getProjectionMatrix().cpy().scale(PPM, PPM, 0));
+            world.step(1 / 60f, 6, 2);
+
+            batch.begin();
+            batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            renderBirds();
+            renderPigs();
+            renderSurroundings();
+
+            BitmapFont scaledFont = new BitmapFont();
+            scaledFont.getData().setScale(2.0f);
+
+            String levelText = "Level: " + levelNum;
+            layout.setText(scaledFont, levelText);
+
+            float textX = (Gdx.graphics.getWidth() - layout.width) / 2;
+            float textY = Gdx.graphics.getHeight() - layout.height - 50;
+
+            scaledFont.draw(batch, levelText, textX, textY);
+            batch.end();
+            stage.act(delta);
+            stage.draw();
+
+            // Uncomment to enable debug rendering
+//            debugRenderer.render(world, batch.getProjectionMatrix().cpy().scale(PPM, PPM, 0));
+        } else {
+
+            batch.begin();
+            batch.setColor(1, 1, 1, 0.4f);
+            batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            renderBirds();
+            renderPigs();
+            renderSurroundings();
+            batch.setColor(1, 1, 1, 1);
+            if(won){
+
+            }else if (loose){
+
+            }
+            else pause.render(delta);
+            batch.end();
+        }
     }
+
 
     private void renderBirds() {
         for (Bird bird : levelCache.getBirds()) {
@@ -251,10 +362,13 @@ public class GamePlay implements Screen {
 
     @Override
     public void dispose() {
+        pause.dispose();
+        System.out.println("Disposing Gameplay");
+        game.getMuliplexer().removeProcessor(stage);
         batch.dispose();
-        background.dispose();
         world.dispose();
         debugRenderer.dispose();
+        stage.dispose();
         for (Texture texture : textures.values()) {
             texture.dispose();
         }
