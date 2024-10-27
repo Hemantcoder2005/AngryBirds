@@ -13,6 +13,7 @@ The game consists of several key components:
 1. **Intro Screen**: 
    - Displays a short story to introduce the game.
    - Loads game assets in the background for a smooth experience.
+   - **Keyboard Command**: Press **Enter** when assets are loaded to transition to the splash screen.
 
 2. **Main Menu**: 
    - Provides options for starting the game, accessing settings, and viewing credits.
@@ -28,17 +29,13 @@ The game consists of several key components:
      - Resume Game
      - Restart Level
      - Quit to Main Menu
+  
+## Keyboard Commands
+- Press **M** to mute/unmute the game audio.
+- Press **Q** to quit the game.
 
-## Gameplay Features
-- Intuitive controls for launching birds.
-- Various levels with increasing difficulty.
-- Engaging sound effects and background music.
-- Smooth animations and graphics.
 
 ## To run
 ```bash
 ./gradlew run
 ```
-- Run above command in terminal
-- Make sure java is installed in local environment
-
