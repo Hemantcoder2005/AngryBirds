@@ -5,7 +5,33 @@
     {
       "imgPath": "GamePlay/Birds/angry_bird.png",
       "x": 80.0,
-      "y": 180.0,
+      "y": 155.0,
+      "width": 50.0,
+      "height": 50.0,
+      "scaleFactor": 0.8,
+      "density": 0.5,
+      "friction": 1.0,
+      "restitution": 0.8,
+      "angle": 0.0,
+      "shape": "circle"
+    },
+    {
+      "imgPath": "GamePlay/Birds/angry_bird.png",
+      "x": 120.0,
+      "y": 155.0,
+      "width": 50.0,
+      "height": 50.0,
+      "scaleFactor": 0.8,
+      "density": 0.5,
+      "friction": 1.0,
+      "restitution": 0.8,
+      "angle": 0.0,
+      "shape": "circle"
+    },
+    {
+      "imgPath": "GamePlay/Birds/angry_bird.png",
+      "x": 160.0,
+      "y": 155.0,
       "width": 50.0,
       "height": 50.0,
       "scaleFactor": 0.8,
@@ -17,23 +43,23 @@
     },
     {
       "imgPath": "GamePlay/Birds/Terence.png",
-      "x": 153.0,
-      "y": 196.0,
+      "x": 200.0,
+      "y": 155.0,
       "width": 78.0,
       "height": 78.0,
       "scaleFactor": 0.8,
-      "density": 0.8,
+      "density": 0.1,
       "friction": 1.0,
       "restitution": 0.7,
-      "angle": 0.5,
+      "angle": 0.0,
       "shape": "circle"
     }
   ],
   "pigs": [
     {
       "imgPath": "GamePlay/Pigs/Pig.png",
-      "x": 890.0,
-      "y": 305.0,
+      "x": 800.0,
+      "y": 405.0,
       "width": 86.0,
       "height": 74.0,
       "scaleFactor": 0.7,
@@ -47,7 +73,7 @@
   "components": [
 
     {
-      "imgPath": "GamePlay/Surroundings/WoodBlock1.png",
+      "imgPath": "GamePlay/Surroundings/WoodBlock1.jpg",
       "x": 952.0,
       "y": 230.0,
       "type": "wood",

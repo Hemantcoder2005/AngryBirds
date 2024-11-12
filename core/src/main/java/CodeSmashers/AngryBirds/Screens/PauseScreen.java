@@ -26,7 +26,6 @@ public class PauseScreen implements Screen {
     private Texture muteSoundTexture;
     private Image soundButton;
     private Image mutedButton;
-
     public PauseScreen(GamePlay level) {
         this.level = level;
         this.batch = new SpriteBatch();
@@ -88,6 +87,7 @@ public class PauseScreen implements Screen {
         if (texture == playTexture) {
             level.game.getMuliplexer().removeProcessor(stage);
             level.game.getMuliplexer().addProcessor(level.stage);
+            level.game.getMuliplexer().addProcessor(level.gamePlayInput);
             level.isPaused = false;
         } else if (texture == saveTexture) {
             System.out.println("Saving");
