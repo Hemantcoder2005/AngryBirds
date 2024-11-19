@@ -9,17 +9,24 @@ public class BirdSerializer implements Json.Serializer<Bird> {
     @Override
     public void write(Json json, Bird bird, Class knownType) {
         json.writeObjectStart();
+
+        // General attributes
         json.writeValue("imgPath", bird.getImgPath());
         json.writeValue("x", bird.getX());
         json.writeValue("y", bird.getY());
         json.writeValue("width", bird.getWidth());
         json.writeValue("height", bird.getHeight());
         json.writeValue("angle", bird.getAngle());
+
+        // Physics properties
         json.writeValue("scaleFactor", bird.getScaleFactor());
         json.writeValue("density", bird.getDensity());
         json.writeValue("friction", bird.getFriction());
         json.writeValue("restitution", bird.getRestitution());
+
+        // Shape details
         json.writeValue("shape", bird.getShape());
+
         json.writeObjectEnd();
     }
 

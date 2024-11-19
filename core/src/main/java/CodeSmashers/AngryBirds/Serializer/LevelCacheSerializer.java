@@ -8,36 +8,51 @@ import CodeSmashers.AngryBirds.Main;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.JsonWriter;
 
 public class LevelCacheSerializer implements Json.Serializer<LevelCache> {
 
     @Override
     public void write(Json json, LevelCache levelCache, Class knownType) {
+        // Set JSON output type to pretty-printed
+        json.setOutputType(JsonWriter.OutputType.json);
+
+        // Register custom serializers
+        json.setSerializer(Bird.class, new BirdSerializer());
+        json.setSerializer(Pig.class, new PigSerializer());
+        json.setSerializer(Surroundings.class, new SurroundingsSerializer());
+
+        // Start writing JSON
         json.writeObjectStart();
+
+        // Serialize background and floorY
+        json.writeValue("background", levelCache.getBackground());
+        json.writeValue("floorY", levelCache.getFloorY());
 
         // Serialize birds
         json.writeArrayStart("birds");
         for (Bird bird : levelCache.getBirds()) {
-            json.writeValue(bird);
+            json.writeValue(bird); // Uses BirdSerializer
         }
         json.writeArrayEnd();
 
         // Serialize pigs
         json.writeArrayStart("pigs");
         for (Pig pig : levelCache.getPigs()) {
-            json.writeValue(pig);
+            json.writeValue(pig); // Uses PigSerializer
         }
         json.writeArrayEnd();
 
         // Serialize components
         json.writeArrayStart("components");
         for (Surroundings component : levelCache.getComponents()) {
-            json.writeValue(component);
+            json.writeValue(component); // Uses SurroundingsSerializer
         }
         json.writeArrayEnd();
 
         json.writeObjectEnd();
     }
+
 
     @Override
     public LevelCache read(Json json, JsonValue jsonData, Class type) {

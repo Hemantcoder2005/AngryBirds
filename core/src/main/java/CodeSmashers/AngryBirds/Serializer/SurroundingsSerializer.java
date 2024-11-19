@@ -4,14 +4,16 @@ import CodeSmashers.AngryBirds.HelperClasses.Surroundings;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
+import static CodeSmashers.AngryBirds.Screens.GamePlay.PPM;
+
 public class SurroundingsSerializer implements Json.Serializer<Surroundings> {
 
     @Override
     public void write(Json json, Surroundings surroundings, Class knownType) {
         json.writeObjectStart();
         json.writeValue("imgPath", surroundings.getImgPath());
-        json.writeValue("x", surroundings.getX());
-        json.writeValue("y", surroundings.getY());
+        json.writeValue("x", surroundings.getBody().getPosition().x * PPM);
+        json.writeValue("y", surroundings.getBody().getPosition().y * PPM);
         json.writeValue("type", surroundings.getType());
         json.writeValue("durability", surroundings.getDurability());
         json.writeValue("width", surroundings.getWidth());
@@ -21,6 +23,7 @@ public class SurroundingsSerializer implements Json.Serializer<Surroundings> {
         json.writeValue("friction", surroundings.getFriction());
         json.writeValue("restitution", surroundings.getRestitution());
         json.writeValue("scaleFactor", surroundings.getScaleFactor());
+        json.writeValue("shape", surroundings.getShape());
         json.writeObjectEnd();
     }
 

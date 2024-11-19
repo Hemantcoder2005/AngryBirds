@@ -22,7 +22,6 @@ public class GlobalInputHandler implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        System.out.println("Key pressed: " + keycode);
         if (keycode == Keys.M) {
             isMuted = !isMuted;
             System.out.println("Muted: " + isMuted);

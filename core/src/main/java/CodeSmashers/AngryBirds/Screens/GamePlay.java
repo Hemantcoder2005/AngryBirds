@@ -8,10 +8,7 @@ import CodeSmashers.AngryBirds.HelperClasses.Pig;
 import CodeSmashers.AngryBirds.HelperClasses.Surroundings;
 import CodeSmashers.AngryBirds.Main;
 import CodeSmashers.AngryBirds.Serializer.LevelCacheSerializer;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -21,6 +18,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -30,15 +28,17 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class GamePlay implements Screen {
     public int levelNum ;
-    private LevelCache levelCache;
+    public LevelCache levelCache;
     private Texture background;
     private GameAssetManager assetManager;
     public SpriteBatch batch;
@@ -72,7 +72,10 @@ public class GamePlay implements Screen {
     private static final float SPRING_CONSTANT_K = 200.0f; // Adjust as needed
     private Vector2 slingshotAnchor;
     public InputAdapter gamePlayInput;
-    private Boolean passedFromMeanPos;
+    public boolean isEditing;
+    private Surroundings editableSurrounding;
+    private Pig editablePig;
+    private float angle;
     public GamePlay(Main game, int levelNumber) {
         this.levelNum = levelNumber;
         this.game = game;
@@ -82,6 +85,33 @@ public class GamePlay implements Screen {
         this.textures = new HashMap<>();
         this.windSpeed = 0.0f;
         this.world = new World(new Vector2(windSpeed, gravity), true);
+        this.world.setContactListener(new ContactListener() {
+            @Override
+            public void beginContact(Contact contact) {
+
+            }
+
+            @Override
+            public void endContact(Contact contact) {
+
+            }
+
+            @Override
+            public void preSolve(Contact contact, Manifold oldManifold) {
+
+            }
+
+            @Override
+            public void postSolve(Contact contact, ContactImpulse impulse) {
+                Body bodyA = contact.getFixtureA().getBody();
+                Body bodyB = contact.getFixtureB().getBody();
+                float totalImpulse = 0;
+                for (float normalImpulse : impulse.getNormalImpulses()) {
+                    totalImpulse += normalImpulse;
+                }
+
+            }
+        });
         this.debugRenderer = new Box2DDebugRenderer();
         loadLevel(levelNumber);
         this.background = assetManager.getTexture(levelCache.getBackground());
@@ -100,7 +130,7 @@ public class GamePlay implements Screen {
         createPauseButton();
         this.slingshotAnchor = new Vector2((slingShotX + 36) ,levelCache.getFloorY());
         gamePlayInput = initializeInputProcessor();
-
+        this.isEditing = false;
     }
 
     private void loadAllTextures() {
@@ -145,6 +175,27 @@ public class GamePlay implements Screen {
         json.setSerializer(LevelCache.class, new LevelCacheSerializer());
         levelCache = json.fromJson(LevelCache.class, fileHandle);
     }
+    private void saveLevel(int levelNum) {
+        // Define the file location
+        FileHandle fileHandle = Gdx.files.local("cache/" + levelNum + ".json");
+
+        // Create a Json instance
+        Json json = new Json();
+        json.setOutputType(JsonWriter.OutputType.json);
+//        json.setOutputType(JsonWriter.OutputType.pretty);
+        // Set the custom serializer if required
+        json.setSerializer(LevelCache.class, new LevelCacheSerializer());
+
+        // Convert the LevelCache object to JSON and write it to the file
+        String jsonString = json.toJson(levelCache);
+        jsonString = formatJson(jsonString);
+        fileHandle.writeString(jsonString, false); // false to overwrite the file
+    }
+    private String formatJson(String jsonString) {
+        return jsonString.replaceAll("\\{", "{\n\t") // Open curly brace
+            .replaceAll(",", ",\n\t")  // Commas between key-value pairs
+            .replaceAll("\\}", "\n\t}"); // Close curly brace
+    }
 
     private void createBirdBodies() {
         for (Bird bird : levelCache.getBirds()) {
@@ -174,6 +225,7 @@ public class GamePlay implements Screen {
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(pig.getX()/PPM , pig.getY()/PPM );
         Body body = world.createBody(bodyDef);
+        body.setTransform(new Vector2(body.getPosition().x, body.getPosition().y),body.getAngle());
         createFixture(body, pig.getWidth(), pig.getHeight(), pig.getDensity(), pig.getFriction(), pig.getRestitution(),pig.getShape(),pig.getScaleFactor());
         pig.setBody(body);
     }
@@ -344,7 +396,7 @@ public class GamePlay implements Screen {
     private void renderBirds() {
         if (!isBirdOnSlingShot && System.currentTimeMillis() - currentTimeMillis > 2000) { // 2 seconds delay
             if (birdPlayed >= levelCache.getBirds().size()) {
-                System.out.println("Game Over: LOST");
+//                System.out.println("Game Over: LOST");
             } else {
                 System.out.println("Placing bird on slingshot");
 
@@ -354,6 +406,7 @@ public class GamePlay implements Screen {
 
                 currentBird.getBody().setType(BodyDef.BodyType.KinematicBody);
                 currentBird.getBody().setLinearVelocity(0,0);
+                currentBird.getBody().setAngularVelocity(0);
                 isBirdOnSlingShot = true;
                 birdPlayed++;
                 currentTimeMillis = System.currentTimeMillis();
@@ -380,6 +433,9 @@ public class GamePlay implements Screen {
             Sprite sprite = pig.getSprite();
             sprite.setPosition(pig.getBody().getPosition().x * PPM - sprite.getWidth() / 2,
                 pig.getBody().getPosition().y * PPM - sprite.getHeight() / 2);
+            if(isEditing && isDraggingBird && editablePig == pig){
+                pig.getBody().setTransform(pig.getBody().getPosition(),angle);
+            }
             sprite.setRotation((float) Math.toDegrees(pig.getBody().getAngle()));
             sprite.draw(batch);
         }
@@ -390,6 +446,9 @@ public class GamePlay implements Screen {
             Sprite sprite = surroundings.getSprite();
             sprite.setPosition(surroundings.getBody().getPosition().x * PPM - sprite.getWidth() / 2,
                 surroundings.getBody().getPosition().y * PPM - sprite.getHeight() / 2);
+            if(isEditing && isDraggingBird && editableSurrounding == surroundings){
+                surroundings.getBody().setTransform(surroundings.getBody().getPosition(),angle);
+            }
             sprite.setRotation((float) Math.toDegrees(surroundings.getBody().getAngle()));
             sprite.draw(batch);
         }
@@ -426,10 +485,66 @@ public class GamePlay implements Screen {
     }
     private InputAdapter initializeInputProcessor() {
         return new InputAdapter() {
+            public boolean keyDown(int keycode){
+                if (keycode == Input.Keys.E){
+                    isEditing = !isEditing;
+                    System.out.println("Now you can edit!");
+                    return true;
+                }
+                if(keycode == Input.Keys.C && isEditing){
+                    saveLevel(levelNum);
+                    System.out.println("Level Saved!");
+                    return true;
+                }
+                return false;
+            }
+            public boolean keyUp(int keycode){
+                if(keycode == Input.Keys.UP && isEditing && isDraggingBird){
+                    angle += 0.1F;
+                    return true;
+                }
+                if(keycode == Input.Keys.DOWN && isEditing && isDraggingBird){
+                    angle -= 0.1F;
+                    return true;
+                }
+                return false;
+            }
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-                Vector2 worldTouch = new Vector2(screenX, Gdx.graphics.getHeight() - screenY).scl(1 / PPM);
-                if (isBirdOnSlingShot) {
+                // Flip the Y-coordinate to align with world coordinates
+                float adjustedY = Gdx.graphics.getHeight() - screenY;
+                Vector2 worldTouch = new Vector2(screenX, adjustedY).scl(1/PPM);
+
+                // Debugging the touch location
+                System.out.println("Mouse clicked at position (Gameplay): X = " + screenX + ", Y = " + adjustedY);
+                System.out.println("Touch Down at World Coordinates: (" + worldTouch.x + "," + worldTouch.y + ")");
+
+                if (isEditing) {
+                    System.out.println("Touch Down in editing");
+                    for (Surroundings surroundings : levelCache.getComponents()) {
+                        if (isWithinBounds(worldTouch, surroundings)) {
+                            isDraggingBird = true;
+                            System.out.println("Clicked Surrounding: " + surroundings.getImgPath());
+                            editableSurrounding = surroundings;
+                            editableSurrounding.getBody().setType(BodyDef.BodyType.KinematicBody);
+                            editableSurrounding.getBody().setLinearVelocity(0,0);
+                            editableSurrounding.getBody().setAngularVelocity(0);
+                            return true;
+                        }
+                    }
+                    editableSurrounding = null;
+                    for (Pig pig : levelCache.getPigs()) {
+                        if (isWithinBoundsPigs(worldTouch, pig)) {
+                            editablePig = pig;
+                            editablePig.getBody().setType(BodyDef.BodyType.KinematicBody);
+                            pig.getBody().setLinearVelocity(0,0);
+                            pig.getBody().setAngularVelocity(0);
+                            isDraggingBird = true;
+                            return true;
+                        }
+                    }
+                    editablePig = null;
+                } else if (isBirdOnSlingShot) {
                     currentBird = levelCache.getBirds().get(levelCache.getBirds().size() - 1 - birdPlayed + 1);
                     Vector2 birdPosition = currentBird.getBody().getPosition();
                     if (birdPosition.dst(worldTouch) < 0.5f) {
@@ -437,17 +552,33 @@ public class GamePlay implements Screen {
                         System.out.println("Now we can drag");
                     }
                     currentBird.getSprite().setRotation(0);
-
                     isDraggingBird = true;
                 }
                 return true;
             }
 
 
+
+
+
             @Override
             public boolean touchDragged(int screenX, int screenY, int pointer) {
-                if (isDraggingBird) {
-                    Vector2 worldTouch = new Vector2(screenX, Gdx.graphics.getHeight() - screenY).scl(1 / PPM);
+                Vector2 worldTouch = new Vector2(screenX, Gdx.graphics.getHeight() - screenY).scl(1/PPM);
+                if(isEditing){
+                    System.out.println(editablePig);
+                    System.out.println(editableSurrounding);
+                    System.out.println("Dragging.....");
+                    if(isDraggingBird) {
+                        if (editablePig != null) {
+
+                            editablePig.getBody().setTransform(worldTouch, angle);
+                        } else if (editableSurrounding != null) {
+                            editableSurrounding.getBody().setTransform(worldTouch, angle);
+                        }
+                    }
+                }
+                else if (isDraggingBird) {
+
                     currentBird.getBody().setTransform(worldTouch, 0);
                     currentBird.getSprite().setRotation(0);
                 }
@@ -456,8 +587,30 @@ public class GamePlay implements Screen {
 
             @Override
             public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-                System.out.println("I am touch up");
-                if (isDraggingBird) {
+                int adjustedY = Gdx.graphics.getHeight() - screenY;
+                Vector2 worldTouch = new Vector2(screenX, adjustedY).scl(1/PPM);
+                if(isEditing){
+                    isDraggingBird = false;
+                    if(editableSurrounding !=null){
+//                        editableSurrounding.setX(screenX);
+//                        editableSurrounding.setY(Gdx.graphics.getHeight() - screenY);
+                        editableSurrounding.getBody().setType(BodyDef.BodyType.DynamicBody);
+                        editableSurrounding.getBody().setTransform(worldTouch,angle);
+                        editableSurrounding.setX(screenX);
+                        editableSurrounding.setY(adjustedY);
+                        editableSurrounding.setAngle(angle);
+                        editableSurrounding = null;
+
+                    }
+                    if(editablePig !=null){
+                        editablePig.getBody().setType(BodyDef.BodyType.DynamicBody);
+                        editablePig.getBody().setTransform(worldTouch,angle);
+                        editablePig.setAngle(angle);
+                        editablePig = null;
+                    }
+                    angle = 0;
+                }
+                else if (isDraggingBird) {
                     isDraggingBird = false;
 
                     currentBird.getBody().setType(BodyDef.BodyType.DynamicBody);
@@ -476,7 +629,7 @@ public class GamePlay implements Screen {
     }
     private void updateVelocity(Vector2 finalPos) {
 
-        float deltaY = (Gdx.graphics.getHeight() - slingshotAnchor.y) - (Gdx.graphics.getHeight() - finalPos.y);
+        float deltaY = (285) - (Gdx.graphics.getHeight() - finalPos.y);
         float deltaX = slingshotAnchor.x - finalPos.x;
         System.out.println("deltaX = "+deltaX);
         System.out.println("deltaY = " + deltaY);
@@ -519,6 +672,35 @@ public class GamePlay implements Screen {
 
         currentBird.getBody().setLinearVelocity((float) vx, (float) vy);
     }
+
+    private boolean isWithinBounds(Vector2 worldCoords, Surroundings surroundings) {
+        surroundings.setX(surroundings.getBody().getPosition().x);
+        surroundings.setY(surroundings.getBody().getPosition().y);
+        System.out.println("Surrounding X = "+ surroundings.getX()+" Y = "+ surroundings.getY());
+        System.out.println("Surrounding width = "+ surroundings.getWidth()+" height = "+ surroundings.getHeight());
+        float maxY = surroundings.getY();
+        float minY = maxY - (surroundings.getHeight()/PPM);
+        float minX = surroundings.getX();
+        float maxX = surroundings.getX() + (surroundings.getWidth()/PPM);
+        if(worldCoords.y >= minY && worldCoords.y<=maxY && worldCoords.x >=minX && worldCoords.x <=maxX) return true;
+        return false;
+    }
+    private boolean isWithinBoundsPigs(Vector2 worldCoords, Pig pigs) {
+        pigs.setX(pigs.getBody().getPosition().x);
+        pigs.setY(pigs.getBody().getPosition().y);
+        System.out.println("Pig X = "+ pigs.getX()+" Y = "+ pigs.getY());
+        System.out.println("pigs width = "+ pigs.getWidth()+" height = "+ pigs.getHeight());
+        float maxY = pigs.getY();
+        float minY = maxY - (pigs.getHeight()/PPM);
+        float minX = pigs.getX();
+        float maxX = pigs.getX() + (pigs.getWidth()/PPM);
+        System.out.println("MaxY = "+maxY + "MinY "+minY);
+        System.out.println(worldCoords.x +" "+worldCoords.y);
+        System.out.println(minX +" "+maxX+" "+ minY +" "+maxY);
+        if(worldCoords.y >= minY && worldCoords.y<=maxY && worldCoords.x >=minX && worldCoords.x <=maxX) return true;
+        return false;
+    }
+
 
 
 }

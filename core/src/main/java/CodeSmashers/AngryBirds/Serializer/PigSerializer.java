@@ -4,14 +4,16 @@ import CodeSmashers.AngryBirds.HelperClasses.Pig;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
+import static CodeSmashers.AngryBirds.Screens.GamePlay.PPM;
+
 public class PigSerializer implements Json.Serializer<Pig> {
 
     @Override
     public void write(Json json, Pig pig, Class knownType) {
         json.writeObjectStart();
         json.writeValue("imgPath", pig.getImgPath());
-        json.writeValue("x", pig.getX());
-        json.writeValue("y", pig.getY());
+        json.writeValue("x", pig.getBody().getPosition().x * PPM);
+        json.writeValue("y", pig.getBody().getPosition().y * PPM);
         json.writeValue("width", pig.getWidth());
         json.writeValue("height", pig.getHeight());
         json.writeValue("health", pig.getHealth());
