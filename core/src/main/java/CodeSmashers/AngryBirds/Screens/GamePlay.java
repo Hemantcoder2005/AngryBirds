@@ -13,10 +13,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -34,7 +31,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+
 
 public class GamePlay implements Screen {
     public int levelNum ;
@@ -44,7 +41,7 @@ public class GamePlay implements Screen {
     public SpriteBatch batch;
     private HashMap<String, Texture> textures;
     public Main game;
-    public float gravity = -1000.6f;
+    public float gravity = -120.6f;
     public static final float PPM = 7f;
     private World world;
     private Box2DDebugRenderer debugRenderer;
@@ -69,15 +66,20 @@ public class GamePlay implements Screen {
     private Bird currentBird;
     long currentTimeMillis;
     private boolean isDraggingBird = false;
-    private static final float SPRING_CONSTANT_K = 200.0f; // Adjust as needed
+    private static final float SPRING_CONSTANT_K = 10.0f; // Adjust as needed
     private Vector2 slingshotAnchor;
     public InputAdapter gamePlayInput;
     public boolean isEditing;
     private Surroundings editableSurrounding;
     private Pig editablePig;
     private float angle;
+    private boolean isrenderTrajectory = true;
+    private List<Vector2> trajectory;
+    private ShapeRenderer shapeRenderer;
+    private float currentBirdMass;
     public GamePlay(Main game, int levelNumber) {
         this.levelNum = levelNumber;
+        shapeRenderer = new ShapeRenderer();
         this.game = game;
         this.assetManager = game.getAssets();
         this.levelCache = new LevelCache();
@@ -128,9 +130,10 @@ public class GamePlay implements Screen {
         createBirdBodies();
         createFloor();
         createPauseButton();
-        this.slingshotAnchor = new Vector2((slingShotX + 36) ,levelCache.getFloorY());
+        this.slingshotAnchor = new Vector2((slingShotX +30) ,levelCache.getFloorY());
         gamePlayInput = initializeInputProcessor();
         this.isEditing = false;
+        this.isrenderTrajectory = false;
     }
 
     private void loadAllTextures() {
@@ -145,6 +148,7 @@ public class GamePlay implements Screen {
             loadTexture(surroundings.getImgPath(), surroundings);
         }
         slingShotTexture = assetManager.getTexture("GamePlay/Levels/slingshot.png");
+
     }
 
     private void loadTexture(String imgPath, Object item) {
@@ -166,24 +170,21 @@ public class GamePlay implements Screen {
             surroundings.getSprite().setSize(surroundings.getWidth() * surroundings.getScaleFactor(), surroundings.getHeight() * surroundings.getScaleFactor());
             surroundings.getSprite().setOriginCenter();
         }
-        slingShotX += 30;
     }
 
     private void loadLevel(int levelNum) {
-        FileHandle fileHandle = Gdx.files.local("cache/" + levelNum + ".json");
+        FileHandle fileHandle = Gdx.files.local("assets/cache/" + levelNum + ".json");
         Json json = new Json();
         json.setSerializer(LevelCache.class, new LevelCacheSerializer());
         levelCache = json.fromJson(LevelCache.class, fileHandle);
     }
     private void saveLevel(int levelNum) {
         // Define the file location
-        FileHandle fileHandle = Gdx.files.local("cache/" + levelNum + ".json");
+        FileHandle fileHandle = Gdx.files.local("assets/cache/" + levelNum + ".json");
 
         // Create a Json instance
         Json json = new Json();
         json.setOutputType(JsonWriter.OutputType.json);
-//        json.setOutputType(JsonWriter.OutputType.pretty);
-        // Set the custom serializer if required
         json.setSerializer(LevelCache.class, new LevelCacheSerializer());
 
         // Convert the LevelCache object to JSON and write it to the file
@@ -348,15 +349,15 @@ public class GamePlay implements Screen {
             Gdx.gl.glClearColor(0, 0, 0, 1);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-            world.step(1 / 180f, 80, 60);
+            world.step(1 / 60f, 8, 3);
 
             batch.begin();
             batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-            batch.draw(slingShotTexture, slingShotX,levelCache.getFloorY());
+            batch.draw(slingShotTexture, slingshotAnchor.x -30,levelCache.getFloorY());
             renderBirds();
             renderPigs();
             renderSurroundings();
-
+            if(isrenderTrajectory && trajectory!= null)renderTrajectory();
             BitmapFont scaledFont = new BitmapFont();
             scaledFont.getData().setScale(2.0f);
 
@@ -372,7 +373,7 @@ public class GamePlay implements Screen {
             stage.draw();
 
             // Uncomment to enable debug rendering
-            debugRenderer.render(world, batch.getProjectionMatrix().cpy().scale(1, 1, 0));
+            debugRenderer.render(world, batch.getProjectionMatrix().cpy().scale(PPM, PPM, 0));
         } else {
 
             batch.begin();
@@ -401,9 +402,9 @@ public class GamePlay implements Screen {
                 System.out.println("Placing bird on slingshot");
 
                 currentBird = levelCache.getBirds().get(levelCache.getBirds().size() - 1 - birdPlayed);
-                currentBird.getBody().setTransform((slingShotX + 36)/PPM ,
+                currentBird.getBody().setTransform((slingshotAnchor.x)/PPM ,
                     (levelCache.getFloorY() + (float) slingShotTexture.getHeight())/PPM , 0);
-
+                currentBirdMass = currentBird.getBody().getMass()/PPM;
                 currentBird.getBody().setType(BodyDef.BodyType.KinematicBody);
                 currentBird.getBody().setLinearVelocity(0,0);
                 currentBird.getBody().setAngularVelocity(0);
@@ -553,6 +554,7 @@ public class GamePlay implements Screen {
                     }
                     currentBird.getSprite().setRotation(0);
                     isDraggingBird = true;
+                    isrenderTrajectory = true;
                 }
                 return true;
             }
@@ -580,6 +582,10 @@ public class GamePlay implements Screen {
                 else if (isDraggingBird) {
 
                     currentBird.getBody().setTransform(worldTouch, 0);
+                    ArrayList<Float> data = updateVelocity(new Vector2(screenX,screenY));
+                    trajectory = calculateTrajectory(data.get(0),data.get(1),worldTouch.x*PPM,worldTouch.y*PPM);
+
+
                     currentBird.getSprite().setRotation(0);
                 }
                 return true;
@@ -612,13 +618,15 @@ public class GamePlay implements Screen {
                 }
                 else if (isDraggingBird) {
                     isDraggingBird = false;
-
+                    isrenderTrajectory = false;
                     currentBird.getBody().setType(BodyDef.BodyType.DynamicBody);
-                    updateVelocity(new Vector2(screenX,screenY));
+                    ArrayList<Float> data = updateVelocity(new Vector2(screenX,screenY));
+                    currentBird.getBody().setLinearVelocity( data.get(2),data.get(3));
                     isBirdOnSlingShot = false;
                     currentBird.getBody().setLinearDamping(0);
                     currentBird.getSprite().setRotation(0);
                     currentTimeMillis = System.currentTimeMillis();
+                    trajectory = null;
                 }
                 game.getMuliplexer().addProcessor(stage);
                 createPauseButton();
@@ -627,51 +635,48 @@ public class GamePlay implements Screen {
         };
 
     }
-    private void updateVelocity(Vector2 finalPos) {
-
-        float deltaY = (285) - (Gdx.graphics.getHeight() - finalPos.y);
+    private ArrayList<Float> updateVelocity(Vector2 finalPos) {
+        ArrayList<Float> data = new ArrayList<>();
+        float deltaY = (float) ((levelCache.getFloorY() + 0.75 * slingShotTexture.getHeight()) - (Gdx.graphics.getHeight() - finalPos.y));
         float deltaX = slingshotAnchor.x - finalPos.x;
-        System.out.println("deltaX = "+deltaX);
+
+        System.out.println("deltaX = " + deltaX);
         System.out.println("deltaY = " + deltaY);
 
-        float slope;
-        if (slingshotAnchor.x != finalPos.x) {
-            slope = deltaY / deltaX;
-        } else {
-            slope = Float.POSITIVE_INFINITY;
-        }
+        // Slope Calculation
+        float slope = (slingshotAnchor.x != finalPos.x) ? deltaY / deltaX : Float.POSITIVE_INFINITY;
         System.out.println("Slope = " + slope);
 
-
+        // Angle Calculation
         double theta = Math.atan2(deltaY, deltaX);
         System.out.println("Angle (radians) = " + theta);
+        data.add((float) theta);
 
-
-        double birdMass = currentBird.getBody().getMass()/50;
-        System.out.println("Bird Mass = " + birdMass);
-
-
+        // Energy Calculations
+        double birdMass = currentBirdMass;
         double netPotentialEnergy = birdMass * Math.abs(gravity) * deltaY;
-        System.out.println("Net Potential Energy = " + netPotentialEnergy);
-
-
         double elasticPotentialEnergy = 0.5 * SPRING_CONSTANT_K * (Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
-        System.out.println("Elastic Potential Energy = " + elasticPotentialEnergy);
 
+        System.out.println("Net Potential Energy = " + netPotentialEnergy);
+        System.out.println("Elastic Potential Energy = " + elasticPotentialEnergy);
 
         double velocity = Math.sqrt((2 / birdMass) * (netPotentialEnergy + elasticPotentialEnergy));
         System.out.println("Total Velocity = " + velocity);
 
-
+        // Velocity Components
         double vx = velocity * Math.cos(theta);
         double vy = velocity * Math.sin(theta);
-
         System.out.println("Velocity X = " + vx);
         System.out.println("Velocity Y = " + vy);
 
+        data.add((float) velocity);
+        data.add((float) vx);
+        data.add((float) vy);
 
-        currentBird.getBody().setLinearVelocity((float) vx, (float) vy);
+        return data;
     }
+
+
 
     private boolean isWithinBounds(Vector2 worldCoords, Surroundings surroundings) {
         surroundings.setX(surroundings.getBody().getPosition().x);
@@ -700,6 +705,82 @@ public class GamePlay implements Screen {
         if(worldCoords.y >= minY && worldCoords.y<=maxY && worldCoords.x >=minX && worldCoords.x <=maxX) return true;
         return false;
     }
+
+    private List<Vector2> calculateTrajectory(float radians, float velocity, float x0, float y0) {
+        System.out.println("Calculating Trajectory...");
+
+        float time = 0f;
+        float timeStep = 0.01f;
+        List<Vector2> trajectory = new ArrayList<>();
+//        radians = (float) Math.toRadians(radians);
+        System.out.println("Traj theta = "+ radians);
+        System.out.println("Traj velocity = "+ velocity);
+        System.out.println("Traj velocityX = "+  velocity * Math.cos(radians) );
+        System.out.println("Traj velocityY = "+ velocity * Math.sin(radians));
+        while (true) {
+            // Calculate the x and y positions
+            double x = (x0 + velocity * Math.cos(radians) * time) ;
+            double y = (y0+ velocity * Math.sin(radians) * time + 0.5f * gravity * time * time) ;
+
+            // Skip invalid points
+            if (Double.isNaN(x) || Double.isNaN(y)) {
+                System.err.println("Invalid point detected (NaN). Skipping...");
+                break;
+            }
+
+            // Stop if the projectile goes out of bounds
+            if (x < 0 || x > slingshotAnchor.x|| y <= levelCache.getFloorY() || y > Gdx.graphics.getHeight()) {
+                break;
+            }
+
+            // Add valid points to the trajectory
+            trajectory.add(new Vector2((float) x, (float) y));
+
+            // Increment time
+            time += timeStep;
+        }
+
+        System.out.println("Trajectory calculation complete.");
+        return trajectory;
+    }
+
+
+
+
+    public void renderTrajectory() {
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(Color.RED);
+
+        float thickness = 0.5f; // Adjust thickness of the line
+
+        for (int i = 0; i < trajectory.size() - 1; i++) {
+            Vector2 point1 = trajectory.get(i);
+            Vector2 point2 = trajectory.get(i + 1);
+
+            // Get the direction vector from point1 to point2
+            Vector2 direction = point2.cpy().sub(point1).nor();
+
+            // Get perpendicular direction to make the rectangle
+            Vector2 perpendicular = new Vector2(direction.x,-direction.y).scl(thickness / 2);
+
+            // Define the four corners of the rectangle
+            float x1 = point1.x + perpendicular.x;
+            float y1 = point1.y + perpendicular.y;
+            float x2 = point1.x - perpendicular.x;
+            float y2 = point1.y - perpendicular.y;
+            float x3 = point2.x - perpendicular.x;
+            float y3 = point2.y - perpendicular.y;
+            float x4 = point2.x + perpendicular.x;
+            float y4 = point2.y + perpendicular.y;
+
+            // Draw the rectangle (a thick line between points)
+            shapeRenderer.rect(x2, y2, x3 - x2, y3 - y2); // You can choose to tweak this depending on preference.
+        }
+
+        shapeRenderer.end();
+    }
+
+
 
 
 
