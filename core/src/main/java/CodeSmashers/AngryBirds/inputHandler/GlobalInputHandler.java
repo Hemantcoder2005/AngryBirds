@@ -1,6 +1,9 @@
 package CodeSmashers.AngryBirds.inputHandler;
 
 import CodeSmashers.AngryBirds.Main;
+import CodeSmashers.AngryBirds.Screens.GamePlay;
+import CodeSmashers.AngryBirds.Screens.LevelSelector;
+import CodeSmashers.AngryBirds.Screens.MainMenuScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Input.Keys;
@@ -36,6 +39,15 @@ public class GlobalInputHandler implements InputProcessor {
             System.out.println("Sound Effect Muted : "+ !MuteSoundEffect);
             return true;
         }
+        if(keycode == Keys.W){
+            game.getState().switchScreen(new MainMenuScreen(game));
+            return true;
+        }
+        if(keycode == Keys.L){
+            game.getState().switchScreen(new LevelSelector(game));
+            return true;
+        }
+
         return false;
     }
 

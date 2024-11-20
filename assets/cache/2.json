@@ -42,8 +42,8 @@
 }],
 "pigs":[{
 "imgPath":"GamePlay/Pigs/Pig.png",
-"x":1556.504,
-"y":-170838.88,
+  "x":988.00006,
+  "y":130.12631,
 "width":86,
 "height":74,
 "health":100,

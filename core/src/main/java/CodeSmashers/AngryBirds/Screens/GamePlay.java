@@ -8,6 +8,7 @@ import CodeSmashers.AngryBirds.HelperClasses.Pig;
 import CodeSmashers.AngryBirds.HelperClasses.Surroundings;
 import CodeSmashers.AngryBirds.Main;
 import CodeSmashers.AngryBirds.Serializer.LevelCacheSerializer;
+import CodeSmashers.AngryBirds.inputHandler.MyContactListener;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -30,6 +31,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -43,7 +45,7 @@ public class GamePlay implements Screen {
     public Main game;
     public float gravity = -120.6f;
     public static final float PPM = 7f;
-    private World world;
+    private static World world;
     private Box2DDebugRenderer debugRenderer;
     private float windSpeed;
     private PauseScreen pause;
@@ -77,6 +79,11 @@ public class GamePlay implements Screen {
     private List<Vector2> trajectory;
     private ShapeRenderer shapeRenderer;
     private float currentBirdMass;
+    private MyContactListener myContactListener;
+    private int PigAvailable;
+    private WinScreen winScreen;
+    private LooseScreen looseScreen;
+    public int stars;
     public GamePlay(Main game, int levelNumber) {
         this.levelNum = levelNumber;
         shapeRenderer = new ShapeRenderer();
@@ -87,33 +94,7 @@ public class GamePlay implements Screen {
         this.textures = new HashMap<>();
         this.windSpeed = 0.0f;
         this.world = new World(new Vector2(windSpeed, gravity), true);
-        this.world.setContactListener(new ContactListener() {
-            @Override
-            public void beginContact(Contact contact) {
-
-            }
-
-            @Override
-            public void endContact(Contact contact) {
-
-            }
-
-            @Override
-            public void preSolve(Contact contact, Manifold oldManifold) {
-
-            }
-
-            @Override
-            public void postSolve(Contact contact, ContactImpulse impulse) {
-                Body bodyA = contact.getFixtureA().getBody();
-                Body bodyB = contact.getFixtureB().getBody();
-                float totalImpulse = 0;
-                for (float normalImpulse : impulse.getNormalImpulses()) {
-                    totalImpulse += normalImpulse;
-                }
-
-            }
-        });
+        this.myContactListener = new MyContactListener();
         this.debugRenderer = new Box2DDebugRenderer();
         loadLevel(levelNumber);
         this.background = assetManager.getTexture(levelCache.getBackground());
@@ -129,11 +110,36 @@ public class GamePlay implements Screen {
         loadAllTextures();
         createBirdBodies();
         createFloor();
+        createWall();
         createPauseButton();
         this.slingshotAnchor = new Vector2((slingShotX +30) ,levelCache.getFloorY());
         gamePlayInput = initializeInputProcessor();
         this.isEditing = false;
         this.isrenderTrajectory = false;
+        world.setContactListener(myContactListener);
+        this.PigAvailable = levelCache.getPigs().size();
+        System.out.println("Pigs = "+PigAvailable);
+        this.winScreen = new WinScreen(this);
+        this.looseScreen = new LooseScreen(this);
+    }
+    private int calculateStars() {
+        // Calculate the Pig-to-Bird ratio
+        float pigToBirdRatio = (float) levelCache.getPigs().size() / levelCache.getBirds().size();
+
+        // Calculate Bird Efficiency: the ratio of remaining birds to total birds
+        float birdEfficiency = (float) (levelCache.getBirds().size() - birdPlayed) / levelCache.getBirds().size();
+
+        // Total Score: A combination of Pig-to-Bird ratio and Bird Efficiency
+        float totalScore = pigToBirdRatio * birdEfficiency;
+
+        // Mapping the total score to stars
+        if (totalScore >= 0.9f) {
+            return 3; // High efficiency, most pigs eliminated with fewer birds
+        } else if (totalScore >= 0.7f) {
+            return 2; // Good efficiency
+        } else {
+            return 1; // Low efficiency
+        }
     }
 
     private void loadAllTextures() {
@@ -173,15 +179,14 @@ public class GamePlay implements Screen {
     }
 
     private void loadLevel(int levelNum) {
-        FileHandle fileHandle = Gdx.files.local("assets/cache/" + levelNum + ".json");
+        FileHandle fileHandle = Gdx.files.internal("cache/" + levelNum + ".json");
         Json json = new Json();
         json.setSerializer(LevelCache.class, new LevelCacheSerializer());
         levelCache = json.fromJson(LevelCache.class, fileHandle);
     }
     private void saveLevel(int levelNum) {
         // Define the file location
-        FileHandle fileHandle = Gdx.files.local("assets/cache/" + levelNum + ".json");
-
+        FileHandle fileHandle = Gdx.files.local("cache/" + levelNum + ".json");
         // Create a Json instance
         Json json = new Json();
         json.setOutputType(JsonWriter.OutputType.json);
@@ -217,7 +222,7 @@ public class GamePlay implements Screen {
         Body body = world.createBody(bodyDef);
         System.out.println(bird.getVx());
         body.setLinearVelocity(bird.getVx(), bird.getVy());
-        createFixture(body, bird.getWidth(), bird.getHeight(), bird.getDensity(), bird.getFriction(), bird.getRestitution(),bird.getShape(),bird.getScaleFactor());
+        createFixture(body, bird.getWidth(), bird.getHeight(), bird.getDensity(), bird.getFriction(), bird.getRestitution(),bird.getShape(),bird.getScaleFactor()).setUserData(bird);
         bird.setBody(body);
     }
 
@@ -227,7 +232,7 @@ public class GamePlay implements Screen {
         bodyDef.position.set(pig.getX()/PPM , pig.getY()/PPM );
         Body body = world.createBody(bodyDef);
         body.setTransform(new Vector2(body.getPosition().x, body.getPosition().y),body.getAngle());
-        createFixture(body, pig.getWidth(), pig.getHeight(), pig.getDensity(), pig.getFriction(), pig.getRestitution(),pig.getShape(),pig.getScaleFactor());
+        createFixture(body, pig.getWidth(), pig.getHeight(), pig.getDensity(), pig.getFriction(), pig.getRestitution(),pig.getShape(),pig.getScaleFactor()).setUserData(pig);
         pig.setBody(body);
     }
 
@@ -236,12 +241,13 @@ public class GamePlay implements Screen {
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(surroundings.getX()/PPM , surroundings.getY()/PPM );
         Body body = world.createBody(bodyDef);
-        createFixture(body, surroundings.getWidth(), surroundings.getHeight(), surroundings.getDensity(), surroundings.getFriction(), surroundings.getRestitution(),surroundings.getShape(),surroundings.getScaleFactor());
+        createFixture(body, surroundings.getWidth(), surroundings.getHeight(), surroundings.getDensity(), surroundings.getFriction(), surroundings.getRestitution(),surroundings.getShape(),surroundings.getScaleFactor()).setUserData(surroundings);
         surroundings.setBody(body);
     }
 
-    private void createFixture(Body body, float width, float height, float density, float friction, float restitution, String shapeType, float scaleFactor) {
+    private Fixture createFixture(Body body, float width, float height, float density, float friction, float restitution, String shapeType, float scaleFactor) {
         FixtureDef fixtureDef = new FixtureDef();
+
 
         float scaledWidth = width*scaleFactor/PPM;
         float scaledHeight = height*scaleFactor/PPM;
@@ -273,7 +279,7 @@ public class GamePlay implements Screen {
         fixtureDef.friction = friction;
         fixtureDef.restitution = restitution;
         body.setLinearDamping(0);
-        body.createFixture(fixtureDef);
+       return body.createFixture(fixtureDef);
     }
     private void createPauseButton() {
         pauseTexture = game.getAssets().getTexture("GamePlay/Levels/pause.png");
@@ -295,24 +301,7 @@ public class GamePlay implements Screen {
             }
         });
     }
-//    private void createWonButton() {
-//        wonButton = game.getAssets().getTexture("GamePlay/Levels/won.png");
-//        Drawable backDrawable = new TextureRegionDrawable(pauseTexture);
-//        pauseButton = new ImageButton(backDrawable);
-//        pauseButton.setSize(100, 100);
-//        pauseButton.setPosition(20, Gdx.graphics.getHeight() - 120);
-//        stage.addActor(pauseButton);
-//
-//        pauseButton.addListener(new ClickListener() {
-//            @Override
-//            public void clicked(InputEvent event, float x, float y) {
-//                mouseClick.playSoundEffect();
-//                System.out.println("Game paused = " + isPaused);
-//                isPaused = true;
-//                pause.show();
-//                game.getMuliplexer().removeProcessor(stage);
-//            }
-//        });
+
 //    }
 
     private void createFloor() {
@@ -332,7 +321,23 @@ public class GamePlay implements Screen {
         floorShape.dispose();
 
     }
+    private void createWall() {
+        BodyDef floorDef = new BodyDef();
+        floorDef.type = BodyDef.BodyType.StaticBody;
+        floorDef.position.set(0, 0);
 
+        Body floorBody = world.createBody(floorDef);
+        EdgeShape floorShape = new EdgeShape();
+        floorShape.set(new Vector2(Gdx.graphics.getWidth()/PPM, levelCache.getFloorY()/PPM ), new Vector2(Gdx.graphics.getWidth() /PPM, Gdx.graphics.getWidth()/PPM));
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = floorShape;
+        fixtureDef.friction = 0.5f;
+
+        floorBody.createFixture(fixtureDef);
+        floorShape.dispose();
+
+    }
 
     @Override
     public void show() {
@@ -354,9 +359,10 @@ public class GamePlay implements Screen {
             batch.begin();
             batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
             batch.draw(slingShotTexture, slingshotAnchor.x -30,levelCache.getFloorY());
-            renderBirds();
-            renderPigs();
             renderSurroundings();
+            renderPigs();
+            renderBirds();
+            batch.draw(slingShotTexture, 1000,-1000);
             if(isrenderTrajectory && trajectory!= null)renderTrajectory();
             BitmapFont scaledFont = new BitmapFont();
             scaledFont.getData().setScale(2.0f);
@@ -377,16 +383,35 @@ public class GamePlay implements Screen {
         } else {
 
             batch.begin();
-            batch.setColor(1, 1, 1, 0.4f);
+
+            batch.setColor(1, 1, 1, 1); // Full opacity for background
             batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-            renderBirds();
-            renderPigs();
-            renderSurroundings();
+
+            batch.setColor(0, 0, 0, 0.6f);
+            batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
             batch.setColor(1, 1, 1, 1);
+            batch.draw(slingShotTexture, slingshotAnchor.x - 30, levelCache.getFloorY());
+            renderSurroundings();
+            renderPigs();
+            renderBirds();
+
+            // This is dummy render
+            batch.draw(slingShotTexture, 1000,-1000);
+
+            System.out.println("win = "+won);
+            System.out.println("Lost = "+loose);
             if(won){
-
+                game.getMuliplexer().removeProcessor(stage);
+                game.getMuliplexer().removeProcessor(gamePlayInput);
+//                System.out.println("Won");
+                if(stars == 0)stars = calculateStars();
+                System.out.println(stars);
+                winScreen.render(delta);
             }else if (loose){
-
+//                System.out.println("Lost");
+                game.getMuliplexer().removeProcessor(stage);
+                game.getMuliplexer().removeProcessor(gamePlayInput);
+                looseScreen.render(delta);
             }
             else pause.render(delta);
             batch.end();
@@ -397,7 +422,8 @@ public class GamePlay implements Screen {
     private void renderBirds() {
         if (!isBirdOnSlingShot && System.currentTimeMillis() - currentTimeMillis > 2000) { // 2 seconds delay
             if (birdPlayed >= levelCache.getBirds().size()) {
-//                System.out.println("Game Over: LOST");
+                if(PigAvailable == 0)won = true;
+                else loose = true;
             } else {
                 System.out.println("Placing bird on slingshot");
 
@@ -430,17 +456,56 @@ public class GamePlay implements Screen {
 
 
     private void renderPigs() {
-        for (Pig pig : levelCache.getPigs()) {
-            Sprite sprite = pig.getSprite();
-            sprite.setPosition(pig.getBody().getPosition().x * PPM - sprite.getWidth() / 2,
-                pig.getBody().getPosition().y * PPM - sprite.getHeight() / 2);
-            if(isEditing && isDraggingBird && editablePig == pig){
-                pig.getBody().setTransform(pig.getBody().getPosition(),angle);
+        Iterator<Pig> pigIterator = levelCache.getPigs().iterator();
+
+        while (pigIterator.hasNext()) {
+            Pig pig = pigIterator.next();
+
+            if (pig.getHealth() > 0) {
+                // Render alive pigs
+                Sprite sprite = pig.getSprite();
+                sprite.setPosition(
+                    pig.getBody().getPosition().x * PPM - sprite.getWidth() / 2,
+                    pig.getBody().getPosition().y * PPM - sprite.getHeight() / 2
+                );
+
+                if (isEditing && isDraggingBird && editablePig == pig) {
+                    pig.getBody().setTransform(pig.getBody().getPosition(), angle);
+                }
+
+                sprite.setRotation((float) Math.toDegrees(pig.getBody().getAngle()));
+                sprite.draw(batch);
+
+            } else {
+                // Handle dead pig with shrinking effect
+                float shrinkRate = 50f; // Shrinking rate in pixels per second
+                Sprite sprite = pig.getSprite();
+
+                float newSize = sprite.getWidth() - shrinkRate * Gdx.graphics.getDeltaTime();
+                if (newSize > 0) {
+                    // Shrink the sprite smoothly
+                    sprite.setSize(newSize, newSize);
+                    sprite.setPosition(
+                        pig.getBody().getPosition().x * PPM - newSize / 2,
+                        pig.getBody().getPosition().y * PPM - newSize / 2
+                    );
+                    sprite.draw(batch);
+                } else {
+                    // Remove the pig from the world when fully shrunk
+                    world.destroyBody(pig.getBody());
+                    pigIterator.remove(); // Safely remove pig using iterator
+                    pig.setBody(null);
+
+//                    System.out.println("Pigs"+PigAvailable);
+                    PigAvailable--;
+                    System.out.println("Pigs killed= "+PigAvailable);
+                    if(PigAvailable == 0)won = true;
+                }
             }
-            sprite.setRotation((float) Math.toDegrees(pig.getBody().getAngle()));
-            sprite.draw(batch);
         }
     }
+
+
 
     private void renderSurroundings() {
         for (Surroundings surroundings : levelCache.getComponents()) {
@@ -477,12 +542,10 @@ public class GamePlay implements Screen {
         System.out.println("Disposing Gameplay");
         game.getMuliplexer().removeProcessor(stage);
         batch.dispose();
-        world.dispose();
+//        world.dispose();
         debugRenderer.dispose();
         stage.dispose();
-        for (Texture texture : textures.values()) {
-            texture.dispose();
-        }
+
     }
     private InputAdapter initializeInputProcessor() {
         return new InputAdapter() {
@@ -729,7 +792,7 @@ public class GamePlay implements Screen {
             }
 
             // Stop if the projectile goes out of bounds
-            if (x < 0 || x > slingshotAnchor.x|| y <= levelCache.getFloorY() || y > Gdx.graphics.getHeight()) {
+            if (x < 0 || x > Gdx.graphics.getWidth()|| y <= levelCache.getFloorY() || y > Gdx.graphics.getHeight()) {
                 break;
             }
 
