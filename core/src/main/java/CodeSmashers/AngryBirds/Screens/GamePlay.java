@@ -2,10 +2,7 @@ package CodeSmashers.AngryBirds.Screens;
 
 import CodeSmashers.AngryBirds.AudioPlayer;
 import CodeSmashers.AngryBirds.GameAssetManager;
-import CodeSmashers.AngryBirds.HelperClasses.Bird;
-import CodeSmashers.AngryBirds.HelperClasses.LevelCache;
-import CodeSmashers.AngryBirds.HelperClasses.Pig;
-import CodeSmashers.AngryBirds.HelperClasses.Surroundings;
+import CodeSmashers.AngryBirds.HelperClasses.*;
 import CodeSmashers.AngryBirds.Main;
 import CodeSmashers.AngryBirds.Serializer.LevelCacheSerializer;
 import CodeSmashers.AngryBirds.inputHandler.MyContactListener;
@@ -68,7 +65,7 @@ public class GamePlay implements Screen {
     private Bird currentBird;
     long currentTimeMillis;
     private boolean isDraggingBird = false;
-    private static final float SPRING_CONSTANT_K = 10.0f; // Adjust as needed
+    private static final float SPRING_CONSTANT_K = 100000.0f;
     private Vector2 slingshotAnchor;
     public InputAdapter gamePlayInput;
     public boolean isEditing;
@@ -84,6 +81,11 @@ public class GamePlay implements Screen {
     private WinScreen winScreen;
     private LooseScreen looseScreen;
     public int stars;
+    public int intialPigs;
+
+    // Sounds
+    public SoundEffects soundEffects;
+
     public GamePlay(Main game, int levelNumber) {
         this.levelNum = levelNumber;
         shapeRenderer = new ShapeRenderer();
@@ -118,24 +120,26 @@ public class GamePlay implements Screen {
         this.isrenderTrajectory = false;
         world.setContactListener(myContactListener);
         this.PigAvailable = levelCache.getPigs().size();
+        this.intialPigs = this.PigAvailable;
         System.out.println("Pigs = "+PigAvailable);
         this.winScreen = new WinScreen(this);
         this.looseScreen = new LooseScreen(this);
+
     }
     private int calculateStars() {
-        // Calculate the Pig-to-Bird ratio
-        float pigToBirdRatio = (float) levelCache.getPigs().size() / levelCache.getBirds().size();
+        float pigToBirdRatio = (float)  intialPigs / levelCache.getBirds().size();
 
         // Calculate Bird Efficiency: the ratio of remaining birds to total birds
-        float birdEfficiency = (float) (levelCache.getBirds().size() - birdPlayed) / levelCache.getBirds().size();
-
+        float birdEfficiency = (float) (levelCache.getBirds().size() - birdPlayed+1) / levelCache.getBirds().size();
+//        System.out.println("pigRatio = "+pigToBirdRatio);
+//        System.out.println(bir);
         // Total Score: A combination of Pig-to-Bird ratio and Bird Efficiency
         float totalScore = pigToBirdRatio * birdEfficiency;
-
+        System.out.println("Score " + totalScore);
         // Mapping the total score to stars
-        if (totalScore >= 0.9f) {
+        if (totalScore >= 0.5f) {
             return 3; // High efficiency, most pigs eliminated with fewer birds
-        } else if (totalScore >= 0.7f) {
+        } else if (totalScore >= 0.2f) {
             return 2; // Good efficiency
         } else {
             return 1; // Low efficiency
@@ -379,7 +383,7 @@ public class GamePlay implements Screen {
             stage.draw();
 
             // Uncomment to enable debug rendering
-            debugRenderer.render(world, batch.getProjectionMatrix().cpy().scale(PPM, PPM, 0));
+//            debugRenderer.render(world, batch.getProjectionMatrix().cpy().scale(PPM, PPM, 0));
         } else {
 
             batch.begin();
@@ -398,8 +402,8 @@ public class GamePlay implements Screen {
             // This is dummy render
             batch.draw(slingShotTexture, 1000,-1000);
 
-            System.out.println("win = "+won);
-            System.out.println("Lost = "+loose);
+//            System.out.println("win = "+won);
+//            System.out.println("Lost = "+loose);
             if(won){
                 game.getMuliplexer().removeProcessor(stage);
                 game.getMuliplexer().removeProcessor(gamePlayInput);
@@ -430,13 +434,14 @@ public class GamePlay implements Screen {
                 currentBird = levelCache.getBirds().get(levelCache.getBirds().size() - 1 - birdPlayed);
                 currentBird.getBody().setTransform((slingshotAnchor.x)/PPM ,
                     (levelCache.getFloorY() + (float) slingShotTexture.getHeight())/PPM , 0);
-                currentBirdMass = currentBird.getBody().getMass()/PPM;
+                currentBirdMass = currentBird.getBody().getMass();
                 currentBird.getBody().setType(BodyDef.BodyType.KinematicBody);
                 currentBird.getBody().setLinearVelocity(0,0);
                 currentBird.getBody().setAngularVelocity(0);
                 isBirdOnSlingShot = true;
                 birdPlayed++;
                 currentTimeMillis = System.currentTimeMillis();
+                SoundEffects.playBirdSelection();
             }
         }
 
@@ -538,12 +543,16 @@ public class GamePlay implements Screen {
 
     @Override
     public void dispose() {
+        game.getMuliplexer().removeProcessor(stage);
+        game.getMuliplexer().removeProcessor(gamePlayInput);
         pause.dispose();
         System.out.println("Disposing Gameplay");
-        game.getMuliplexer().removeProcessor(stage);
         batch.dispose();
 //        world.dispose();
         debugRenderer.dispose();
+        winScreen.dispose();
+        looseScreen.dispose();
+        pause.dispose();
         stage.dispose();
 
     }
@@ -628,6 +637,7 @@ public class GamePlay implements Screen {
 
             @Override
             public boolean touchDragged(int screenX, int screenY, int pointer) {
+                int adjustedY = Gdx.graphics.getHeight() - screenY;
                 Vector2 worldTouch = new Vector2(screenX, Gdx.graphics.getHeight() - screenY).scl(1/PPM);
                 if(isEditing){
                     System.out.println(editablePig);
@@ -647,7 +657,7 @@ public class GamePlay implements Screen {
                     currentBird.getBody().setTransform(worldTouch, 0);
                     ArrayList<Float> data = updateVelocity(new Vector2(screenX,screenY));
                     trajectory = calculateTrajectory(data.get(0),data.get(1),worldTouch.x*PPM,worldTouch.y*PPM);
-
+                    SoundEffects.playSlingshotStretched();
 
                     currentBird.getSprite().setRotation(0);
                 }
@@ -683,13 +693,19 @@ public class GamePlay implements Screen {
                     isDraggingBird = false;
                     isrenderTrajectory = false;
                     currentBird.getBody().setType(BodyDef.BodyType.DynamicBody);
-                    ArrayList<Float> data = updateVelocity(new Vector2(screenX,screenY));
-                    currentBird.getBody().setLinearVelocity( data.get(2),data.get(3));
-                    isBirdOnSlingShot = false;
                     currentBird.getBody().setLinearDamping(0);
+                    currentBird.getBody().setAngularDamping(0);
+
+                    ArrayList<Float> data = updateVelocity(new Vector2(screenX,screenY));
+//                    currentBird.getBody().setLinearVelocity( data.get(2),data.get(3));
+                    currentBird.getBody().applyLinearImpulse(new Vector2(data.get(2),data.get(3)),currentBird.getBody().getWorldCenter(),true);
+                    isBirdOnSlingShot = false;
+
                     currentBird.getSprite().setRotation(0);
                     currentTimeMillis = System.currentTimeMillis();
                     trajectory = null;
+                    SoundEffects.playFlyingBird();
+
                 }
                 game.getMuliplexer().addProcessor(stage);
                 createPauseButton();
@@ -700,44 +716,44 @@ public class GamePlay implements Screen {
     }
     private ArrayList<Float> updateVelocity(Vector2 finalPos) {
         ArrayList<Float> data = new ArrayList<>();
-        float deltaY = (float) ((levelCache.getFloorY() + 0.75 * slingShotTexture.getHeight()) - (Gdx.graphics.getHeight() - finalPos.y));
+
+        // Calculate displacements
+        float deltaY = (levelCache.getFloorY() +  slingShotTexture.getHeight()) - (Gdx.graphics.getHeight() - finalPos.y);
         float deltaX = slingshotAnchor.x - finalPos.x;
 
-        System.out.println("deltaX = " + deltaX);
-        System.out.println("deltaY = " + deltaY);
-
-        // Slope Calculation
-        float slope = (slingshotAnchor.x != finalPos.x) ? deltaY / deltaX : Float.POSITIVE_INFINITY;
-        System.out.println("Slope = " + slope);
-
-        // Angle Calculation
+        // Calculate angle (in radians)
         double theta = Math.atan2(deltaY, deltaX);
-        System.out.println("Angle (radians) = " + theta);
-        data.add((float) theta);
+        data.add((float) theta); // Angle in radians
 
-        // Energy Calculations
+        // Calculate elastic potential energy
+        double displacementSquared = Math.pow(deltaX, 2) + Math.pow(deltaY, 2);
+        double elasticPotentialEnergy = 0.5 * SPRING_CONSTANT_K * displacementSquared;
+
+        // Calculate gravitational potential energy
         double birdMass = currentBirdMass;
-        double netPotentialEnergy = birdMass * Math.abs(gravity) * deltaY;
-        double elasticPotentialEnergy = 0.5 * SPRING_CONSTANT_K * (Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+        double gravitationalPotentialEnergy = birdMass * Math.abs(gravity) * deltaY;
 
-        System.out.println("Net Potential Energy = " + netPotentialEnergy);
-        System.out.println("Elastic Potential Energy = " + elasticPotentialEnergy);
+        // Total energy and velocity
+        double totalEnergy = elasticPotentialEnergy + gravitationalPotentialEnergy;
+        double velocity = Math.sqrt((2 * totalEnergy) / birdMass);
 
-        double velocity = Math.sqrt((2 / birdMass) * (netPotentialEnergy + elasticPotentialEnergy));
-        System.out.println("Total Velocity = " + velocity);
-
-        // Velocity Components
+        // Velocity components
         double vx = velocity * Math.cos(theta);
         double vy = velocity * Math.sin(theta);
-        System.out.println("Velocity X = " + vx);
-        System.out.println("Velocity Y = " + vy);
 
-        data.add((float) velocity);
-        data.add((float) vx);
-        data.add((float) vy);
+        // Add results to the data list
+        data.add((float) velocity); // Total velocity
+        data.add((float) vx);       // Velocity X
+        data.add((float) vy);       // Velocity Y
+
+        // Debugging information
+        System.out.println("Angle (radians): " + theta);
+        System.out.println("Velocity: " + velocity + ", vx: " + vx + ", vy: " + vy);
 
         return data;
     }
+
+
 
 
 
@@ -776,14 +792,16 @@ public class GamePlay implements Screen {
         float timeStep = 0.01f;
         List<Vector2> trajectory = new ArrayList<>();
 //        radians = (float) Math.toRadians(radians);
-        System.out.println("Traj theta = "+ radians);
-        System.out.println("Traj velocity = "+ velocity);
-        System.out.println("Traj velocityX = "+  velocity * Math.cos(radians) );
-        System.out.println("Traj velocityY = "+ velocity * Math.sin(radians));
+//        System.out.println("Traj theta = "+ radians);
+//        System.out.println("Traj velocity = "+ velocity);
+//        System.out.println("Traj velocityX = "+  velocity * Math.cos(radians) );
+//        System.out.println("Traj velocityY = "+ velocity * Math.sin(radians));
+            velocity /=PPM;
+
         while (true) {
             // Calculate the x and y positions
-            double x = (x0 + velocity * Math.cos(radians) * time) ;
-            double y = (y0+ velocity * Math.sin(radians) * time + 0.5f * gravity * time * time) ;
+            double x = (x0 + (velocity * Math.cos(radians) * time)) ;
+            double y = (y0+ (velocity * Math.sin(radians) * time + 0.5f * gravity/PPM * time * time)) ;
 
             // Skip invalid points
             if (Double.isNaN(x) || Double.isNaN(y)) {
@@ -792,10 +810,10 @@ public class GamePlay implements Screen {
             }
 
             // Stop if the projectile goes out of bounds
-            if (x < 0 || x > Gdx.graphics.getWidth()|| y <= levelCache.getFloorY() || y > Gdx.graphics.getHeight()) {
+            if (x < 0 || x > slingshotAnchor.x || y <= levelCache.getFloorY() || y > Gdx.graphics.getHeight()) {
                 break;
             }
-
+            System.out.println("Trajectory is ("+x+" , "+y + ")");
             // Add valid points to the trajectory
             trajectory.add(new Vector2((float) x, (float) y));
 
@@ -810,38 +828,31 @@ public class GamePlay implements Screen {
 
 
 
-    public void renderTrajectory() {
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(Color.RED);
 
-        float thickness = 0.5f; // Adjust thickness of the line
+
+
+    public void renderTrajectory() {
+        if (trajectory == null || trajectory.isEmpty()) return;
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.RED);
 
         for (int i = 0; i < trajectory.size() - 1; i++) {
             Vector2 point1 = trajectory.get(i);
             Vector2 point2 = trajectory.get(i + 1);
 
-            // Get the direction vector from point1 to point2
-            Vector2 direction = point2.cpy().sub(point1).nor();
+            // Draw a line between consecutive points
+            shapeRenderer.line(point1.x, point1.y, point2.x, point2.y);
 
-            // Get perpendicular direction to make the rectangle
-            Vector2 perpendicular = new Vector2(direction.x,-direction.y).scl(thickness / 2);
-
-            // Define the four corners of the rectangle
-            float x1 = point1.x + perpendicular.x;
-            float y1 = point1.y + perpendicular.y;
-            float x2 = point1.x - perpendicular.x;
-            float y2 = point1.y - perpendicular.y;
-            float x3 = point2.x - perpendicular.x;
-            float y3 = point2.y - perpendicular.y;
-            float x4 = point2.x + perpendicular.x;
-            float y4 = point2.y + perpendicular.y;
-
-            // Draw the rectangle (a thick line between points)
-            shapeRenderer.rect(x2, y2, x3 - x2, y3 - y2); // You can choose to tweak this depending on preference.
+            // Debugging each line being drawn
+            System.out.println("Drawing line from: " + point1 + " to " + point2);
         }
 
         shapeRenderer.end();
     }
+
+
+
 
 
 

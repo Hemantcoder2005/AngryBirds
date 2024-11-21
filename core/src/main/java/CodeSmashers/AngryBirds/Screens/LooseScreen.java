@@ -19,6 +19,7 @@ public class LooseScreen implements Screen {
     private Texture blackScreen;
     private Texture backTexture;
     private Texture replayTexture;
+    private boolean isStageAdded = false;
     public LooseScreen(GamePlay level) {
         this.level = level;
         this.batch = new SpriteBatch();
@@ -46,9 +47,9 @@ public class LooseScreen implements Screen {
 
     private Image createButton(Texture texture, float x, float y) {
         Image button = new Image(texture);
-        float buttonWidth = 100;
-        float buttonHeight = 100;
-        button.setSize(buttonWidth, buttonHeight);
+//        float buttonWidth = 100;
+//        float buttonHeight = 100;
+//        button.setSize(buttonWidth, buttonHeight);
         button.setPosition(x, y);
         button.addListener(new ClickListener() {
             @Override
@@ -72,14 +73,15 @@ public class LooseScreen implements Screen {
 
     @Override
     public void show() {
-        level.game.getMuliplexer().addProcessor(stage);
-        System.out.println("I am loose Screen");
         System.out.println("added..........");
     }
 
     @Override
     public void render(float delta) {
-        System.out.println("I am loose Screen");
+        if(!isStageAdded){
+            level.game.getMuliplexer().addProcessor(stage);
+            isStageAdded = true;
+        }
         batch.begin();
         float x = (float) (Gdx.graphics.getWidth() - blackScreen.getWidth()) / 2;
         float y = (float) (Gdx.graphics.getHeight() - blackScreen.getHeight()) / 2;
@@ -104,10 +106,12 @@ public class LooseScreen implements Screen {
     @Override
     public void hide() {
         level.game.getMuliplexer().removeProcessor(stage);
+        isStageAdded = false;
     }
 
     @Override
     public void dispose() {
+        level.game.getMuliplexer().removeProcessor(stage);
         batch.dispose();
         stage.dispose();
     }

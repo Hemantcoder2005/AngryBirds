@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -36,6 +37,7 @@ public class LevelSelector implements Screen {
     private Texture angryBird;
     private Texture backTexture;
     private ImageButton backButton;
+    private int onWhichLevel;
 
     public LevelSelector(Main game) {
         this.game = game;
@@ -54,7 +56,6 @@ public class LevelSelector implements Screen {
         angryBird = game.getAssets().getTexture(BASE_DIR + "angry_bird.png");
         backTexture = game.getAssets().getTexture(BASE_DIR + "back.png");
     }
-
     private void createBackButton() {
         Drawable backDrawable = new TextureRegionDrawable(backTexture);
         backButton = new ImageButton(backDrawable);
@@ -70,7 +71,6 @@ public class LevelSelector implements Screen {
             }
         });
     }
-
     private void createLevelButtons() {
         float buttonY = (float) Gdx.graphics.getHeight() / 2 - 100;
         int levelCount = assetManager.levels;
@@ -82,26 +82,20 @@ public class LevelSelector implements Screen {
             String levelKey = "level" + i;
             Level level = assetManager.LevelChart.get(levelKey);
             boolean isCompleted = level.isCompleted();
-            String texturePath = BASE_DIR + i + ".png";
-            if (i == 10) {
-                texturePath = BASE_DIR + "boss_level" + ".png";
+
+            if (!isCompleted && onWhichLevel == 0) {
+                onWhichLevel = i;
             }
-            Texture levelTexture = game.getAssets().getTexture(texturePath);
-            Drawable levelDrawable = new TextureRegionDrawable(levelTexture);
 
-            ImageButton levelButton = new ImageButton(levelDrawable);
-            levelButton.setSize(LEVEL_BUTTON_SIZE, LEVEL_BUTTON_SIZE);
+            String texturePath = BASE_DIR + (i == 10 ? "boss_level" : i);
 
-            buttonTable.add(levelButton).padRight(LEVEL_BUTTON_PADDING);
-
-            int finalI = i;
-            levelButton.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    mouseClick.playSoundEffect();
-                    game.getState().switchScreen(new GamePlay(game,finalI));
-                }
-            });
+            if (isCompleted) {
+                createLevelButton(buttonTable, texturePath + ".png", i, false);
+            } else if (i == onWhichLevel) {
+                createLevelButton(buttonTable, texturePath + ".png", i, true);
+            } else {
+                createDisabledLevelButton(buttonTable, texturePath + "b.png", i);
+            }
         }
 
         ScrollPane scrollPane = new ScrollPane(buttonTable);
@@ -119,6 +113,62 @@ public class LevelSelector implements Screen {
         stage.addActor(scrollPane);
     }
 
+    private void createLevelButton(Table table, String texturePath, int levelIndex, boolean isHighlighted) {
+        Texture levelTexture = game.getAssets().getTexture(texturePath);
+        Drawable levelDrawable = new TextureRegionDrawable(levelTexture);
+
+        ImageButton levelButton = new ImageButton(levelDrawable);
+        levelButton.setSize(LEVEL_BUTTON_SIZE, LEVEL_BUTTON_SIZE);
+        levelButton.setTouchable(Touchable.enabled);
+
+        if (isHighlighted) {
+            setHighlightedButtonStyle(levelButton, texturePath);
+        }
+
+        table.add(levelButton).padRight(LEVEL_BUTTON_PADDING);
+
+        levelButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                mouseClick.playSoundEffect();
+                game.getState().switchScreen(new GamePlay(game, levelIndex));
+            }
+        });
+    }
+
+    private void createDisabledLevelButton(Table table, String texturePath, int levelIndex) {
+        Texture levelTexture = game.getAssets().getTexture(texturePath);
+        Drawable levelDrawable = new TextureRegionDrawable(levelTexture);
+
+        ImageButton levelButton = new ImageButton(levelDrawable);
+        levelButton.setSize(LEVEL_BUTTON_SIZE, LEVEL_BUTTON_SIZE);
+        levelButton.setTouchable(Touchable.disabled);
+
+        table.add(levelButton).padRight(LEVEL_BUTTON_PADDING);
+
+        levelButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                mouseClick.playSoundEffect();
+                game.getState().switchScreen(new GamePlay(game, levelIndex));
+            }
+        });
+    }
+
+    private void setHighlightedButtonStyle(ImageButton levelButton, String texturePath) {
+        Drawable highlightedDrawable = new TextureRegionDrawable(game.getAssets().getTexture(texturePath));
+        ImageButton.ImageButtonStyle levelButtonStyle = new ImageButton.ImageButtonStyle();
+        levelButtonStyle.up = highlightedDrawable;
+        levelButtonStyle.down = highlightedDrawable;
+        levelButtonStyle.checked = highlightedDrawable;
+        levelButtonStyle.disabled = highlightedDrawable;
+        levelButton.setStyle(levelButtonStyle);
+        levelButton.setColor(1.2f, 1.2f, 1.2f, 1);  // Apply brightness effect
+    }
+
+
+
+
     @Override
     public void show() {
         game.getMuliplexer().addProcessor(stage);
@@ -130,13 +180,12 @@ public class LevelSelector implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-            batch.begin();
-            batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-            batch.end();
+        batch.begin();
+        batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.end();
         stage.act(delta);
         stage.draw();
-        }
-
+    }
 
     @Override
     public void resize(int width, int height) {
@@ -157,6 +206,7 @@ public class LevelSelector implements Screen {
 
     @Override
     public void dispose() {
+        game.getMuliplexer().removeProcessor(stage);
         batch.dispose();
         stage.dispose();
         angryBird.dispose();

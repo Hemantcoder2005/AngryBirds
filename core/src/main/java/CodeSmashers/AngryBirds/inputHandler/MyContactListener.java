@@ -41,14 +41,13 @@ public class MyContactListener implements ContactListener {
             reduceHealth(fixtureA, impulseMagnitude);  // Reduce health of pig based on impact
         }
 
-//        // Check if bird collided with block
-//        if (isBird(fixtureA) && isBlock(fixtureB)) {
-//            System.out.println("Bird and block are in contact");
-//            reduceHealth(fixtureB, impulseMagnitude);  // Reduce health of block based on impact
-//        } else if (isBird(fixtureB) && isBlock(fixtureA)) {
-//            System.out.println("Bird and block are in contact");
-//            reduceHealth(fixtureA, impulseMagnitude);  // Reduce health of block based on impact
-//        }
+        // Check if bird collided with block
+        if (isBird(fixtureA) && isBlock(fixtureB)) {
+
+        } else if (isBird(fixtureB) && isBlock(fixtureA)) {
+            System.out.println("Bird and block are in contact");
+            reduceHealth(fixtureA, impulseMagnitude);  // Reduce health of block based on impact
+        }
 
         // Check if pig collided with block
         if (isPig(fixtureA) && isBlock(fixtureB)) {

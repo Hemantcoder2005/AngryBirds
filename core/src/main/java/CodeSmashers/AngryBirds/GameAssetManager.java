@@ -1,6 +1,7 @@
 package CodeSmashers.AngryBirds;
 
 import CodeSmashers.AngryBirds.HelperClasses.Level;
+import CodeSmashers.AngryBirds.HelperClasses.SoundEffects;
 import CodeSmashers.AngryBirds.Serializer.LevelSerializer;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
@@ -75,6 +76,7 @@ public class GameAssetManager implements Disposable {
                 initializeUserLevels();
             }
         }
+        if(assetManager.getProgress() >=1.0f) SoundEffects.initialize(this);
         return assetManager.update();
     }
 
@@ -124,6 +126,10 @@ public class GameAssetManager implements Disposable {
             }
             json.setSerializer(Level.class, new LevelSerializer());
             SaveJson("user",LevelChart);
+    }public void saveUserLevels() {
+        System.out.println("Building user.json");
+        json.setSerializer(Level.class, new LevelSerializer());
+        SaveJson("user",LevelChart);
     }
     private <T> void SaveJson(String path,T Data) {
         json.setTypeName(null);

@@ -1,13 +1,12 @@
 package CodeSmashers.AngryBirds;
 
+import CodeSmashers.AngryBirds.HelperClasses.SoundEffects;
 import CodeSmashers.AngryBirds.Screens.Intro;
 import CodeSmashers.AngryBirds.inputHandler.GlobalInputHandler;
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Array;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends Game {
@@ -18,6 +17,7 @@ public class Main extends Game {
     private StateManager state;
     private GameAssetManager assets;
     private AudioManager audio;
+    private boolean isSoundEffectIntialized = false;
     @Override
     public void create() {
         globalInputHandler = new GlobalInputHandler(this);
@@ -28,13 +28,16 @@ public class Main extends Game {
         state.create();
         Gdx.input.setInputProcessor(multiplexer);
         System.out.println("StateManager initialized: " + (state != null));
+
     }
 
     @Override
     public void render() {
         if(state!=null) state.render();
         else Gdx.app.exit();
+//        printInputProcessors(this.getMuliplexer());
         if(AudioManager.getCurrentMusic() != null) AudioManager.getCurrentMusic().toggleMuteBackgroundMusic(this.getGlobalInputHandler().isMuted());
+
     }
 
     @Override
@@ -65,6 +68,26 @@ public class Main extends Game {
 
     public GlobalInputHandler getGlobalInputHandler() {
         return globalInputHandler;
+    }
+    public void printInputProcessors(InputMultiplexer multiplexer) {
+        System.out.println("Input Processors in Multiplexer:");
+        if (multiplexer == null) {
+            System.out.println("Multiplexer is null.");
+            return;
+        }
+        Array<InputProcessor> processors = multiplexer.getProcessors();
+        if (processors.size == 0) {
+            System.out.println("No input processors added to the multiplexer.");
+        } else {
+            for (InputProcessor processor : processors) {
+                if (processor != null) {
+                    System.out.println(processor.getClass().getName());
+                } else {
+                    System.out.println("Null input processor found.");
+                }
+            }
+        }
+        System.out.println("\n\n");
     }
 
 
