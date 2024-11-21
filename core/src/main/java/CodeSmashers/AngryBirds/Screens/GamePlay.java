@@ -40,7 +40,7 @@ public class GamePlay implements Screen {
     public SpriteBatch batch;
     private HashMap<String, Texture> textures;
     public Main game;
-    public float gravity = -120.6f;
+    public float gravity = -80.6f;
     public static final float PPM = 7f;
     private static World world;
     private Box2DDebugRenderer debugRenderer;
