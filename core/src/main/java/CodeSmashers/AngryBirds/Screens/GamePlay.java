@@ -65,7 +65,7 @@ public class GamePlay implements Screen {
     private Bird currentBird;
     long currentTimeMillis;
     private boolean isDraggingBird = false;
-    private static final float SPRING_CONSTANT_K = 10000000.0f;
+    private static final float SPRING_CONSTANT_K = 1000000000000.0f;
     private Vector2 slingshotAnchor;
     public InputAdapter gamePlayInput;
     public boolean isEditing;
