@@ -473,9 +473,9 @@ public class GamePlay implements Screen {
                     pig.getBody().getPosition().x * PPM - sprite.getWidth() / 2,
                     pig.getBody().getPosition().y * PPM - sprite.getHeight() / 2
                 );
-                if(isEditing){
+                if (isEditing) {
                     pig.getBody().setType(BodyDef.BodyType.StaticBody);
-                }else {
+                } else {
                     pig.getBody().setType(BodyDef.BodyType.DynamicBody);
                 }
                 if (isEditing && isDraggingBird && editablePig == pig) {
@@ -505,34 +505,49 @@ public class GamePlay implements Screen {
                     pigIterator.remove(); // Safely remove pig using iterator
                     pig.setBody(null);
 
-//                    System.out.println("Pigs"+PigAvailable);
                     PigAvailable--;
-                    System.out.println("Pigs killed= "+PigAvailable);
-                    if(PigAvailable == 0)won = true;
+                    System.out.println("Pigs killed= " + PigAvailable);
+                    if (PigAvailable == 0) won = true;
                 }
             }
         }
     }
 
-
-
     private void renderSurroundings() {
-        for (Surroundings surroundings : levelCache.getComponents()) {
-            Sprite sprite = surroundings.getSprite();
-            sprite.setPosition(surroundings.getBody().getPosition().x * PPM - sprite.getWidth() / 2,
-                surroundings.getBody().getPosition().y * PPM - sprite.getHeight() / 2);
-            if(isEditing){
-                surroundings.getBody().setType(BodyDef.BodyType.StaticBody);
-            }else{
-                surroundings.getBody().setType(BodyDef.BodyType.DynamicBody);
-            }
-            if(isEditing && isDraggingBird && editableSurrounding == surroundings){
-                surroundings.getBody().setTransform(surroundings.getBody().getPosition(),angle);
-            }
-            sprite.setRotation((float) Math.toDegrees(surroundings.getBody().getAngle()));
-            sprite.draw(batch);
+        Iterator<Surroundings> surroundingsIterator = levelCache.getComponents().iterator();
+
+        while (surroundingsIterator.hasNext()) {
+            Surroundings surroundings = surroundingsIterator.next();
+
+            if (surroundings.getDurability() > 0) {
+                // Render intact surroundings
+                Sprite sprite = surroundings.getSprite();
+                sprite.setPosition(
+                    surroundings.getBody().getPosition().x * PPM - sprite.getWidth() / 2,
+                    surroundings.getBody().getPosition().y * PPM - sprite.getHeight() / 2
+                );
+                if (isEditing) {
+                    surroundings.getBody().setType(BodyDef.BodyType.StaticBody);
+                } else {
+                    surroundings.getBody().setType(BodyDef.BodyType.DynamicBody);
+                }
+                if (isEditing && isDraggingBird && editableSurrounding == surroundings) {
+                    surroundings.getBody().setTransform(surroundings.getBody().getPosition(), angle);
+                }
+
+                sprite.setRotation((float) Math.toDegrees(surroundings.getBody().getAngle()));
+                sprite.draw(batch);
+
+            } else {
+
+                    world.destroyBody(surroundings.getBody());
+                    surroundingsIterator.remove();
+                    surroundings.setBody(null);
+                }
+
         }
     }
+
 
     @Override
     public void resize(int width, int height) {

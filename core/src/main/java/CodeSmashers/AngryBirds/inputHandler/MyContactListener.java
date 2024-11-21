@@ -6,23 +6,21 @@ import CodeSmashers.AngryBirds.HelperClasses.SoundEffects;
 import CodeSmashers.AngryBirds.HelperClasses.Surroundings;
 import com.badlogic.gdx.physics.box2d.*;
 
-
-
 public class MyContactListener implements ContactListener {
 
     @Override
     public void beginContact(Contact contact) {
-        // Nothing special to do here for health reduction
+        // Triggered when two bodies start colliding (optional)
     }
 
     @Override
     public void endContact(Contact contact) {
-        // Called when the bodies stop colliding (optional)
+        // Triggered when two bodies stop colliding (optional)
     }
 
     @Override
     public void preSolve(Contact contact, Manifold oldManifold) {
-        // Pre-solve step (optional, used for more advanced collision handling)
+        // Pre-solve step for advanced collision handling (optional)
     }
 
     @Override
@@ -30,86 +28,113 @@ public class MyContactListener implements ContactListener {
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
 
-        // Get the impulse magnitude (force * time) from the ContactImpulse
+        // Calculate the magnitude of the collision impulse
         float impulseMagnitude = calculateImpulseMagnitude(impulse);
 
-        // Check if bird collided with pig
+        // Handle bird collisions
         if (isBird(fixtureA) && isPig(fixtureB)) {
-            SoundEffects.playBirdCollision();
-
-            System.out.println("Bird and pig are in contact");
-            reduceHealth(fixtureB, impulseMagnitude);  // Reduce health of pig based on impact
+            handleBirdPigCollision(fixtureB, impulseMagnitude);
         } else if (isBird(fixtureB) && isPig(fixtureA)) {
-            System.out.println("Bird and pig are in contact");
-            reduceHealth(fixtureA, impulseMagnitude);  // Reduce health of pig based on impact
-        }
-
-        // Check if bird collided with block
-        if (isBird(fixtureA) && isBlock(fixtureB)) {
-
+            handleBirdPigCollision(fixtureA, impulseMagnitude);
+        } else if (isBird(fixtureA) && isBlock(fixtureB)) {
+            handleBirdBlockCollision(fixtureB, impulseMagnitude);
         } else if (isBird(fixtureB) && isBlock(fixtureA)) {
-            System.out.println("Bird and block are in contact");
-            reduceHealth(fixtureA, impulseMagnitude);  // Reduce health of block based on impact
+            handleBirdBlockCollision(fixtureA, impulseMagnitude);
         }
 
-        // Check if pig collided with block
+        // Handle pig collisions
         if (isPig(fixtureA) && isBlock(fixtureB)) {
-//            System.out.println("Pig and block are in contact");
-            reduceHealth(fixtureB, impulseMagnitude);  // Reduce health of block based on impact
+            handlePigBlockCollision(fixtureB, impulseMagnitude);
         } else if (isPig(fixtureB) && isBlock(fixtureA)) {
-//            System.out.println("Pig and block are in contact");
-            reduceHealth(fixtureA, impulseMagnitude);  // Reduce health of block based on impact
-        }
-
-        if (isPig(fixtureA) && isPig(fixtureB)) {
-//            System.out.println("Pig and block are in contact");
-            reduceHealth(fixtureB, impulseMagnitude);  // Reduce health of block based on impact
-            reduceHealth(fixtureA, impulseMagnitude);
+            handlePigBlockCollision(fixtureA, impulseMagnitude);
+        } else if (isPig(fixtureA) && isPig(fixtureB)) {
+            handlePigPigCollision(fixtureA, fixtureB, impulseMagnitude);
         }
     }
 
     private boolean isBird(Fixture fixture) {
-        return fixture.getUserData() != null && fixture.getUserData() instanceof Bird;
+        return fixture.getUserData() instanceof Bird;
     }
 
     private boolean isPig(Fixture fixture) {
-        return fixture.getUserData() != null && fixture.getUserData() instanceof Pig;
+        return fixture.getUserData() instanceof Pig;
     }
 
     private boolean isBlock(Fixture fixture) {
-        return fixture.getUserData() != null && fixture.getUserData() instanceof Surroundings;
+        return fixture.getUserData() instanceof Surroundings;
     }
 
     private float calculateImpulseMagnitude(ContactImpulse impulse) {
         float totalImpulse = 0;
-        for (int i = 0; i < impulse.getCount(); i++) {
-            totalImpulse += impulse.getNormalImpulses()[i];
+        for (float normalImpulse : impulse.getNormalImpulses()) {
+            totalImpulse += normalImpulse;
         }
         return totalImpulse;
     }
 
-    // Reduce health based on the calculated impact magnitude
+    private void handleBirdPigCollision(Fixture pigFixture, float impulseMagnitude) {
+        SoundEffects.playBirdCollision();
+        SoundEffects.playPigCollide();
+        System.out.println("Bird and pig are in contact.");
+        reduceHealth(pigFixture, impulseMagnitude);
+    }
+
+    private void handleBirdBlockCollision(Fixture blockFixture, float impulseMagnitude) {
+        SoundEffects.playBirdCollision();
+        SoundEffects.playWoodCollision();
+        System.out.println("Bird and block are in contact.");
+        reduceHealth(blockFixture, impulseMagnitude);
+    }
+
+    private void handlePigBlockCollision(Fixture blockFixture, float impulseMagnitude) {
+        System.out.println("Pig and block are in contact.");
+        reduceHealth(blockFixture, impulseMagnitude);
+    }
+
+    private void handlePigPigCollision(Fixture pigFixtureA, Fixture pigFixtureB, float impulseMagnitude) {
+        System.out.println("Two pigs collided.");
+        reduceHealth(pigFixtureA, impulseMagnitude);
+        reduceHealth(pigFixtureB, impulseMagnitude);
+    }
+
     private void reduceHealth(Fixture fixture, float impact) {
         Object userData = fixture.getUserData();
-        if (userData instanceof Pig && impact > 300) {
+
+        if (userData instanceof Pig && impact > 100) {
             Pig pig = (Pig) userData;
-            Body body = pig.getBody();
-
-            float mass = body.getMass(); // Get the pig's mass
-            float scalingFactor = 0.8f;  // Adjust this based on your game's balance
-
-            // Calculate damage
-            int damage = (int) ((impact / (mass + 1)) * scalingFactor);
-            damage = Math.max(damage, 1); // Ensure at least 1 damage is dealt
-
-            // Reduce health
-            int health = pig.getHealth();
-            pig.setHealth(health - damage);
-
-            System.out.println("Impact = " + impact + ", Mass = " + mass + ", Damage = " + damage + ", New Health = " + pig.getHealth());
+            applyDamage(pig, impact, 0.9f);
+        } else if (userData instanceof Surroundings && impact > 200) {
+            Surroundings block = (Surroundings) userData;
+            applyDamage(block, impact, 0.4f);
         }
     }
 
+    private void applyDamage(Pig pig, float impact, float scalingFactor) {
+        Body body = pig.getBody();
+        float mass = body.getMass();
+        int damage = Math.max((int) ((impact / (mass + 1)) * scalingFactor), 1);
+        pig.setHealth(pig.getHealth() - damage);
+
+        System.out.printf("Pig Damage: Impact=%.2f, Mass=%.2f, Damage=%d, New Health=%d%n",
+            impact, mass, damage, pig.getHealth());
+
+        if (pig.getHealth() <= 0) {
+            SoundEffects.playPigDestroy();
+            System.out.println("Pig is destroyed!");
+        }
+    }
+
+    private void applyDamage(Surroundings block, float impact, float scalingFactor) {
+        int damage = Math.max((int) (impact * scalingFactor), 1);
+        block.setDurability(block.getDurability() - damage);
+
+        System.out.printf("Block Damage: Impact=%.2f, Damage=%d, New Durability=%d%n",
+            impact, damage, block.getDurability());
+
+        // Check if block durability is below a threshold
+        if (block.getDurability() <= 0) {
+            SoundEffects.playWoodDestroy();
+            System.out.println("Block is destroyed!");
+        }
+    }
 }
-
-
