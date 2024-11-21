@@ -2,6 +2,7 @@ package CodeSmashers.AngryBirds.inputHandler;
 
 import CodeSmashers.AngryBirds.HelperClasses.Bird;
 import CodeSmashers.AngryBirds.HelperClasses.Pig;
+import CodeSmashers.AngryBirds.HelperClasses.SoundEffects;
 import CodeSmashers.AngryBirds.HelperClasses.Surroundings;
 import com.badlogic.gdx.physics.box2d.*;
 
@@ -34,6 +35,8 @@ public class MyContactListener implements ContactListener {
 
         // Check if bird collided with pig
         if (isBird(fixtureA) && isPig(fixtureB)) {
+            SoundEffects.playBirdCollision();
+
             System.out.println("Bird and pig are in contact");
             reduceHealth(fixtureB, impulseMagnitude);  // Reduce health of pig based on impact
         } else if (isBird(fixtureB) && isPig(fixtureA)) {
