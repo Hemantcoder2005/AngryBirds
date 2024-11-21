@@ -319,7 +319,7 @@ public class GamePlay implements Screen {
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = floorShape;
-        fixtureDef.friction = 0.5f;
+        fixtureDef.friction = 1f;
 
         floorBody.createFixture(fixtureDef);
         floorShape.dispose();
