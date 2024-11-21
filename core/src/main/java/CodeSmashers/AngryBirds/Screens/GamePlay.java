@@ -65,7 +65,7 @@ public class GamePlay implements Screen {
     private Bird currentBird;
     long currentTimeMillis;
     private boolean isDraggingBird = false;
-    private static final float SPRING_CONSTANT_K = 100000.0f;
+    private static final float SPRING_CONSTANT_K = 10000000.0f;
     private Vector2 slingshotAnchor;
     public InputAdapter gamePlayInput;
     public boolean isEditing;
@@ -319,7 +319,7 @@ public class GamePlay implements Screen {
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = floorShape;
-        fixtureDef.friction = 0.5f;
+        fixtureDef.friction = 1f;
 
         floorBody.createFixture(fixtureDef);
         floorShape.dispose();
@@ -473,7 +473,11 @@ public class GamePlay implements Screen {
                     pig.getBody().getPosition().x * PPM - sprite.getWidth() / 2,
                     pig.getBody().getPosition().y * PPM - sprite.getHeight() / 2
                 );
-
+                if(isEditing){
+                    pig.getBody().setType(BodyDef.BodyType.StaticBody);
+                }else {
+                    pig.getBody().setType(BodyDef.BodyType.DynamicBody);
+                }
                 if (isEditing && isDraggingBird && editablePig == pig) {
                     pig.getBody().setTransform(pig.getBody().getPosition(), angle);
                 }
@@ -517,6 +521,11 @@ public class GamePlay implements Screen {
             Sprite sprite = surroundings.getSprite();
             sprite.setPosition(surroundings.getBody().getPosition().x * PPM - sprite.getWidth() / 2,
                 surroundings.getBody().getPosition().y * PPM - sprite.getHeight() / 2);
+            if(isEditing){
+                surroundings.getBody().setType(BodyDef.BodyType.StaticBody);
+            }else{
+                surroundings.getBody().setType(BodyDef.BodyType.DynamicBody);
+            }
             if(isEditing && isDraggingBird && editableSurrounding == surroundings){
                 surroundings.getBody().setTransform(surroundings.getBody().getPosition(),angle);
             }
