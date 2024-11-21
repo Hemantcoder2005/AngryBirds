@@ -179,14 +179,14 @@ public class GamePlay implements Screen {
     }
 
     private void loadLevel(int levelNum) {
-        FileHandle fileHandle = Gdx.files.internal("cache/" + levelNum + ".json");
+        FileHandle fileHandle = Gdx.files.internal("assets/cache/" + levelNum + ".json");
         Json json = new Json();
         json.setSerializer(LevelCache.class, new LevelCacheSerializer());
         levelCache = json.fromJson(LevelCache.class, fileHandle);
     }
     private void saveLevel(int levelNum) {
         // Define the file location
-        FileHandle fileHandle = Gdx.files.local("cache/" + levelNum + ".json");
+        FileHandle fileHandle = Gdx.files.local("assets/cache/" + levelNum + ".json");
         // Create a Json instance
         Json json = new Json();
         json.setOutputType(JsonWriter.OutputType.json);
