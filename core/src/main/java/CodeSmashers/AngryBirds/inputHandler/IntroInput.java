@@ -2,6 +2,8 @@ package CodeSmashers.AngryBirds.inputHandler;
 
 import CodeSmashers.AngryBirds.Main;
 import CodeSmashers.AngryBirds.Screens.Intro;
+import CodeSmashers.AngryBirds.Screens.LevelSelector;
+import CodeSmashers.AngryBirds.Screens.MainMenuScreen;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 
@@ -19,6 +21,7 @@ public class IntroInput implements InputProcessor {
            introScreen.skip = true;
            return true;
        }
+
         return false;
     }
 

@@ -169,6 +169,7 @@ public class Intro implements Screen {
     public void dispose() {
         game.getMuliplexer().removeProcessor(input);
 
+
         if (intro != null) {
             intro.dispose();
         }

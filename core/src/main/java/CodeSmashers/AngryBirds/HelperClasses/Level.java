@@ -3,8 +3,8 @@ package CodeSmashers.AngryBirds.HelperClasses;
 import java.util.ArrayList;
 
 public class Level {
-    private boolean locked;
-    private int stars;
+    public boolean locked;
+    public int stars;
 
     public Level() {
     }

@@ -14,8 +14,8 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class PauseScreen implements Screen {
     private final GamePlay level;
-    private final Stage stage;
-    private final Batch batch;
+    private Stage stage;
+    private Batch batch;
     private Texture blackScreen;
     private Texture playTexture;
     private Texture saveTexture;
@@ -49,14 +49,14 @@ public class PauseScreen implements Screen {
         float centerX = Gdx.graphics.getWidth() / 2f;
         float centerY = Gdx.graphics.getHeight() / 2f;
 
-        Image playButton = createButton(playTexture, centerX - 160, centerY - 100);
-        Image saveButton = createButton(saveTexture, centerX - 40, centerY - 100);
-        soundButton = createButton(soundTexture, centerX + 80, centerY - 100);
-        mutedButton = createButton(muteSoundTexture, centerX + 80, centerY - 100);
+        Image playButton = createButton(playTexture, centerX - 160, centerY - 120);
+        Image saveButton = createButton(saveTexture, centerX - 40, centerY - 120);
+        soundButton = createButton(soundTexture, centerX + 80, centerY - 120);
+        mutedButton = createButton(muteSoundTexture, centerX + 80, centerY - 120);
         mutedButton.setVisible(false);
-        Image backButton = createButton(backTexture, centerX - 160, centerY - 200);
-        Image replayButton = createButton(replayTexture, centerX - 40, centerY - 200);
-        Image nextButton = createButton(nextTexture, centerX + 80, centerY - 200);
+        Image backButton = createButton(backTexture, centerX - 160, centerY - 220);
+        Image replayButton = createButton(replayTexture, centerX - 40, centerY - 220);
+        Image nextButton = createButton(nextTexture, centerX + 80, centerY - 220);
 
         stage.addActor(playButton);
         stage.addActor(saveButton);
@@ -69,9 +69,9 @@ public class PauseScreen implements Screen {
 
     private Image createButton(Texture texture, float x, float y) {
         Image button = new Image(texture);
-        float buttonWidth = 100;
-        float buttonHeight = 100;
-        button.setSize(buttonWidth, buttonHeight);
+//        float buttonWidth = 100;
+//        float buttonHeight = 100;
+//        button.setSize(buttonWidth, buttonHeight);
         button.setPosition(x, y);
         button.addListener(new ClickListener() {
             @Override
@@ -143,12 +143,19 @@ public class PauseScreen implements Screen {
 
     @Override
     public void hide() {
-        level.game.getMuliplexer().removeProcessor(stage);
+
     }
 
     @Override
     public void dispose() {
-        batch.dispose();
-        stage.dispose();
+        level.game.getMuliplexer().removeProcessor(stage);
+        if(batch!=null){
+            batch.dispose();
+            batch = null;
+        }
+        if(stage!=null){
+            stage.dispose();
+            stage = null;
+        }
     }
 }
