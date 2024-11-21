@@ -55,20 +55,6 @@
 "shape":"circle"
 },
 {
-"imgPath":"GamePlay/Pigs/Chef.png",
-"x":988.00006,
-"y":130.12631,
-"width":86,
-"height":74,
-"health":100,
-"angle":0,
-"scaleFactor":0.7,
-"density":0.5,
-"friction":1,
-"restitution":0.6,
-"shape":"circle"
-},
-{
 "imgPath":"GamePlay/Pigs/Minion.png",
 "x":757.63275,
 "y":251.51967,
@@ -83,19 +69,33 @@
 "shape":"circle"
 }],
 "components":[{
-"imgPath":"GamePlay/Surroundings/block2.png",
+"imgPath":"GamePlay/Surroundings/block2.jpg",
 "x":816.7929,
 "y":131.16006,
 "type":"wood",
 "durability":5,
-"width":208,
-"height":62,
+"width":81,
+"height":18,
 "angle":0,
 "density":0.8,
 "friction":1,
 "restitution":0.3,
-"scaleFactor":1,
+"scaleFactor":1.5,
 "shape":"rectangle"
+},{
+  "imgPath":"GamePlay/Surroundings/block2.jpg",
+  "x":816.7929,
+  "y":131.16006,
+  "type":"wood",
+  "durability":5,
+  "width":81,
+  "height":18,
+  "angle":0,
+  "density":0.8,
+  "friction":1,
+  "restitution":0.3,
+  "scaleFactor":1.5,
+  "shape":"rectangle"
 },
 {
 "imgPath":"GamePlay/Surroundings/WoodBlock1.jpg",
@@ -111,5 +111,49 @@
 "restitution":0.3,
 "scaleFactor":0.8,
 "shape":"rectangle"
-}]
+},{
+    "imgPath":"GamePlay/Surroundings/block3.png",
+    "x":899.2532,
+    "y":341.8141,
+    "type":"wood",
+    "durability":5,
+    "width":100,
+    "height":10,
+    "angle":0,
+    "density":20,
+    "friction":1000,
+    "restitution":0.3,
+    "scaleFactor":2.5,
+    "shape":"rectangle"
+  },
+  {
+    "imgPath":"GamePlay/Surroundings/block6.png",
+    "x":810.01514,
+    "y":242.70331,
+    "type":"wood",
+    "durability":5,
+    "width":10,
+    "height":70,
+    "angle":0,
+    "density":20,
+    "friction":1000,
+    "restitution":0.3,
+    "scaleFactor":2.5,
+    "shape":"rectangle"
+  },
+  {
+    "imgPath":"GamePlay/Surroundings/block6.png",
+    "x":994.6446,
+    "y":242.69493,
+    "type":"wood",
+    "durability":5,
+    "width":10,
+    "height":70,
+    "angle":0,
+    "density":20,
+    "friction":1000,
+    "restitution":0.3,
+    "scaleFactor":2.5,
+    "shape":"rectangle"
+  }]
 }
