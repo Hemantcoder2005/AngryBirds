@@ -114,7 +114,7 @@ public class GamePlay implements Screen {
         createPauseButton();
         this.slingshotAnchor = new Vector2((slingShotX +30) ,levelCache.getFloorY());
         gamePlayInput = initializeInputProcessor();
-        this.isEditing = false;
+        this.isEditing = true;
         this.isrenderTrajectory = false;
         world.setContactListener(myContactListener);
         this.PigAvailable = levelCache.getPigs().size();
