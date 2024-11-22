@@ -103,7 +103,7 @@ public class MyContactListener implements ContactListener {
         if (userData instanceof Pig && impact > 100) {
             Pig pig = (Pig) userData;
             applyDamage(pig, impact, 0.9f);
-        } else if (userData instanceof Surroundings && impact > 200) {
+        } else if (userData instanceof Surroundings && impact > 1000) {
             Surroundings block = (Surroundings) userData;
             applyDamage(block, impact, 0.4f);
         }
