@@ -1,7 +1,57 @@
 {
 	"background":"GamePlay/Levels/level1.png",
 	"floorY":155,
-	"birds":[],
+	"birds":[{
+      "imgPath":"GamePlay/Birds/angry_bird.png",
+      "x":35,
+      "y":155,
+      "width":78,
+      "height":78,
+      "angle":0,
+      "scaleFactor":0.8,
+      "density":0.5,
+      "friction":1,
+      "restitution":0.7,
+      "shape":"circle"
+    },{
+      "imgPath":"GamePlay/Birds/blue1.png",
+      "x":100,
+      "y":155,
+      "width":50,
+      "height":50,
+      "angle":0,
+      "scaleFactor":0.8,
+      "density":0.5,
+      "friction":1,
+      "restitution":0.8,
+      "shape":"circle"
+    },
+      {
+        "imgPath":"GamePlay/Birds/Chuck.png",
+        "x":160,
+        "y":155,
+        "width":50,
+        "height":50,
+        "angle":0,
+        "scaleFactor":0.8,
+        "density":0.5,
+        "friction":1,
+        "restitution":0.8,
+        "shape":"circle"
+      },
+      {
+        "imgPath":"GamePlay/Birds/angry_bird.png",
+        "x":200,
+        "y":155,
+        "width":78,
+        "height":78,
+        "angle":0,
+        "scaleFactor":0.8,
+        "density":0.5,
+        "friction":1,
+        "restitution":0.7,
+        "shape":"circle"
+      }],
 	"pigs":[{
 	"imgPath":"GamePlay/Pigs/Pig.png",
 	"x":912.00006,
