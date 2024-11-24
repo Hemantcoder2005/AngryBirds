@@ -16,6 +16,7 @@ public class LevelCache {
     private ArrayList<Bird> birds;
     private ArrayList<Pig> pigs;
     private ArrayList<Surroundings> components;
+    private ArrayList<Bird> birdUsed;
     private float floorY;
 
     public float getFloorY() {
@@ -30,6 +31,7 @@ public class LevelCache {
         this.birds = new ArrayList<>();
         this.pigs = new ArrayList<>();
         this.components = new ArrayList<>();
+        this.birdUsed = new ArrayList<>();
     }
     public String getBackground(){
         return background;

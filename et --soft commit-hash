@@ -1,0 +1,282 @@
+[33mcommit b4068ac1e09c9bbdb844946adf7c6f1d22a5ac05[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: 04433cf 8248183
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Sun Nov 24 12:59:32 2024 +0530
+
+    errorSolved
+
+[33mcommit 04433cff222f85f30d282ac32ff89bcff520a962[m
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Sun Nov 24 12:56:42 2024 +0530
+
+    changedGitignore
+
+[33mcommit 82481834db259aa1d5a018f607ebe00541b59e42[m
+Author: girik23222 <girik23222@iiitd.ac.in>
+Date:   Sun Nov 24 12:41:41 2024 +0530
+
+    Levels recreated
+
+[33mcommit cc4b73763ce80d579cc5c9ab078527c821965eb8[m
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Sat Nov 23 22:52:32 2024 +0530
+
+    SaveLevelCreated
+
+[33mcommit 940466890d8565c6bf05fa0b6317822d744ad6ac[m
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Sat Nov 23 22:51:52 2024 +0530
+
+    SaveLevelCreated
+
+[33mcommit 960125b9050bf382469f9d1e83fec4a372eda5a3[m
+Merge: d12b605 e160c13
+Author: girik23222 <girik23222@iiitd.ac.in>
+Date:   Fri Nov 22 10:53:14 2024 +0530
+
+    Level5
+
+[33mcommit d12b605f450922be1fd2171d055e212392a632c4[m
+Author: girik23222 <girik23222@iiitd.ac.in>
+Date:   Fri Nov 22 05:22:48 2024 +0530
+
+    Chanaged
+
+[33mcommit e160c13a93758cccb811e66b00af4856ed934d8e[m
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Fri Nov 22 05:22:01 2024 +0530
+
+    bugFixed
+
+[33mcommit a7ea7d5cb14e4403b056659ebe9ebf2185b30879[m
+Merge: 8d89191 73c804e
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Fri Nov 22 05:14:50 2024 +0530
+
+    Merge remote-tracking branch 'origin/main'
+
+[33mcommit 8d8919103acca4387f94be44a2fe5e10b5ea10c8[m
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Fri Nov 22 05:14:34 2024 +0530
+
+    SurroundingDestroyed
+
+[33mcommit 73c804e1054a2a7af5164991ee907b5a4afd20f6[m
+Author: girik23222 <girik23222@iiitd.ac.in>
+Date:   Fri Nov 22 05:13:31 2024 +0530
+
+    Level5 made
+
+[33mcommit 87b1fb7a9207882137074fc9dce68911a0e98963[m
+Author: girik23222 <girik23222@iiitd.ac.in>
+Date:   Fri Nov 22 04:54:04 2024 +0530
+
+    Level4 completed
+
+[33mcommit 4215fec418476e19180249762107b73b39fb98c2[m
+Author: girik23222 <girik23222@iiitd.ac.in>
+Date:   Fri Nov 22 04:09:32 2024 +0530
+
+    Level3 done
+
+[33mcommit dde59a330a5ab2d375c5d9ec72a07aadf068111e[m
+Author: girik23222 <girik23222@iiitd.ac.in>
+Date:   Fri Nov 22 03:55:01 2024 +0530
+
+    LEvel2 winning
+
+[33mcommit 022d86e3bfa48df7c9fe22c85036d12d3062a814[m
+Author: girik23222 <girik23222@iiitd.ac.in>
+Date:   Fri Nov 22 03:47:58 2024 +0530
+
+    LEvel2 done
+
+[33mcommit 0928a34e44b0bfa652ffe2523fddfbb1e6b384e9[m
+Merge: 9b09dbe 58c6ff2
+Author: girik23222 <girik23222@iiitd.ac.in>
+Date:   Fri Nov 22 03:30:09 2024 +0530
+
+    Level2
+
+[33mcommit 9b09dbe5fba9c5d7b24700039fe5a058e102890d[m
+Author: girik23222 <girik23222@iiitd.ac.in>
+Date:   Fri Nov 22 03:28:46 2024 +0530
+
+    LEvel2 updating
+
+[33mcommit 58c6ff2ca4f8489eac116d50727c7977f8b03646[m
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Fri Nov 22 03:27:55 2024 +0530
+
+    MadeStatic
+
+[33mcommit 378357953eed82ca0769f9ad777a5489b967ebd2[m
+Merge: bbaff16 145d0f1
+Author: girik23222 <girik23222@iiitd.ac.in>
+Date:   Fri Nov 22 02:41:54 2024 +0530
+
+    Merge branch 'main' of https://github.com/Hemantcoder2005/AngryBirds
+    Taking the corrected corrected
+
+[33mcommit bbaff168ea7af26dc3bad7d1fee357568621f0a1[m
+Author: girik23222 <girik23222@iiitd.ac.in>
+Date:   Fri Nov 22 02:41:25 2024 +0530
+
+    Level 2 updating
+
+[33mcommit 145d0f14d5edb50e432bdc4c2e121610c49419b9[m
+Merge: d6688be 7a9173a
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Fri Nov 22 02:38:26 2024 +0530
+
+    Merge remote-tracking branch 'origin/main'
+
+[33mcommit d6688bee51601dcfc65ca057510bf1774f1c829d[m
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Fri Nov 22 02:38:05 2024 +0530
+
+    SoundEffectsAdded
+
+[33mcommit 7a9173a711319b57617e4366d0221d10d399749b[m
+Author: girik23222 <girik23222@iiitd.ac.in>
+Date:   Fri Nov 22 02:19:13 2024 +0530
+
+    LEvel1 created
+
+[33mcommit e5b624e28d724a9e498bf6ff01ffc700fc4ca3a7[m
+Merge: 3aadb3b 6528aaf
+Author: girik23222 <girik23222@iiitd.ac.in>
+Date:   Fri Nov 22 01:38:44 2024 +0530
+
+    JSon Updated
+
+[33mcommit 3aadb3b1c452398fe11444399edef8eb00f536a6[m
+Author: girik23222 <girik23222@iiitd.ac.in>
+Date:   Fri Nov 22 01:37:10 2024 +0530
+
+    JSON Updated
+
+[33mcommit 6528aaf95934e4617013298ef8b9b6fb0cbc0fb0[m
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Thu Nov 21 15:21:54 2024 +0530
+
+    errorFixed
+
+[33mcommit c89f54b04ffdb665ff46b788062ee32c42a3fa7a[m
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Wed Nov 20 22:23:51 2024 +0530
+
+    jsonUpdated
+
+[33mcommit bcd18b61dd9255b32706d6a67745a0c86799da77[m
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Wed Nov 20 22:23:26 2024 +0530
+
+    WinAndLooseScreenCreated
+
+[33mcommit 13fe0b29729bdb85e1815fbe910ffd61c006f7a2[m
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Wed Nov 20 14:19:36 2024 +0530
+
+    htmlExcluded
+
+[33mcommit 6540af3ad74bc3796e7521473150c6419bead35f[m
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Wed Nov 20 03:34:14 2024 +0530
+
+    RubberCreated
+
+[33mcommit 6a8d08876402ceae3d6ee753550b4c3eca96d230[m
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Tue Nov 19 23:27:28 2024 +0530
+
+    Infinite Level Generator Completed
+
+[33mcommit 065c7b10ad0ab6c150d632853b2aa2e0f040cf8e[m
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Tue Nov 12 20:52:54 2024 +0530
+
+    SlingShotCreated
+
+[33mcommit 64deb0b706a59ffbc1e361c42f93258a41a74f6f[m
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Tue Nov 12 09:39:02 2024 +0530
+
+    SlingShotCreated
+
+[33mcommit 25fb0ae2d25f31db9a6a1b842dea7bd52f67c578[m[33m ([m[1;31morigin/Test[m[33m)[m
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Sun Oct 27 19:37:08 2024 +0530
+
+    ReadmeUpdated
+
+[33mcommit 4aed0b5ec914cf02961f9245806d5721f79833a8[m
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Sun Oct 27 19:29:52 2024 +0530
+
+    ReadmeUpdated
+
+[33mcommit 3c8ddc72ef96d4b9a4bc742d38417f974015a0c1[m
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Sun Oct 27 19:20:08 2024 +0530
+
+    StaticGuiCompleted
+
+[33mcommit 1333fe8d5e1ab4fc77fe6e17b8e5ff487640d2e8[m
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Sat Oct 26 14:17:20 2024 +0530
+
+    Level1.jsonUpdated
+
+[33mcommit bff7abf32885268a93ec876960e77d6fe93e99d8[m
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Sat Oct 26 11:49:11 2024 +0530
+
+    PhysicsAdded
+
+[33mcommit 460c5689f4985a6efc18cd9b7f8d9ba89134213a[m
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Fri Oct 25 22:52:55 2024 +0530
+
+    updated
+
+[33mcommit ad47dfe53069471d357596ddde26cbda8df65994[m
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Fri Oct 25 22:38:31 2024 +0530
+
+    ImpreovedGraphicsLogic
+
+[33mcommit 1d736dd7e7814d60657dbc000db6a2e0727e6c77[m
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Fri Oct 25 22:07:32 2024 +0530
+
+    UpdatedSerializer
+
+[33mcommit 2bbb09b2b7f259d015db51be46eab9cc92d6493d[m
+Merge: 6f46986 454367d
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Fri Oct 25 20:55:14 2024 +0530
+
+    GamePlayCreating
+
+[33mcommit 6f46986e79d00c3673e0d7805156c83e39eca068[m
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Fri Oct 25 20:49:17 2024 +0530
+
+    Check
+
+[33mcommit 454367d2e22d19640e7e8d31e050aad22000af4f[m
+Author: girik23222 <158738921+girik23222@users.noreply.github.com>
+Date:   Fri Oct 25 20:45:46 2024 +0530
+
+    Added Level
+
+[33mcommit 5480f6ee7f19dd9ed8a43bfd7a5997b01c003fe0[m
+Author: Hemantcoder2005 <hemantnarula2203@outlook.com>
+Date:   Fri Oct 25 19:29:42 2024 +0530
+
+    GamePlayCreating
+
+[33mcommit 066b34ce4c111ba60e9122fef7e0a1b9a555f126[m
+Author: girik23222 <158738921+girik23222@users.noreply.github.com>
+Date:   Fri Oct 25 16:50:39 2024 +0530

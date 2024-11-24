@@ -5,6 +5,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 
 public class Surroundings {
     private String imgPath;
+    private String damageImg;
     private float x;
     private float y;
     private String type;
@@ -54,8 +55,9 @@ public class Surroundings {
 
     public Surroundings() {}
 
-    public Surroundings(String imgPath, float x, float y, String type, int durability, float width, float height, float angle, float density, float friction, float restitution,float scaleFactor,String shape) {
+    public Surroundings(String imgPath,String damageImg, float x, float y, String type, int durability, float width, float height, float angle, float density, float friction, float restitution,float scaleFactor,String shape) {
         this.imgPath = imgPath;
+        this.damageImg = damageImg;
         this.x = x;
         this.y = y;
         this.type = type;
@@ -133,6 +135,9 @@ public class Surroundings {
     public void setAngle(float angle) {
         this.angle = angle;
     }
+    public void setAngle() {
+        this.angle = body.getAngle();
+    }
 
     public float getDensity() {
         return density;
@@ -164,5 +169,13 @@ public class Surroundings {
 
     public void takeDamage(int damage) {
         durability = Math.max(durability - damage, 0);
+    }
+
+    public String getDamageImg() {
+        return damageImg;
+    }
+
+    public void setDamageImg(String damageImg) {
+        this.damageImg = damageImg;
     }
 }

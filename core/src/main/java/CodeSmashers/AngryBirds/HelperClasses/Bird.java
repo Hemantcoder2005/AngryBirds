@@ -9,8 +9,8 @@ public class Bird {
     private String imgPath;
     private float x;
     private float y;
-    private float Vx;
-    private float Vy;
+    private float vx;
+    private float vy;
     private float width;
     private float height;
     private float angle;
@@ -22,16 +22,18 @@ public class Bird {
     private float friction;
     private float restitution;
     private String shape;
-
+    private boolean isOnSlingShot;
+    private boolean isBirdUsed;
     public String getShape() {
         return shape;
     }
+
 
     public void setShape(String shape) {
         this.shape = shape;
     }
 
-    public Bird(String imgPath, float x, float y, float angle, float width, float height, float scaleFactor, float density, float friction, float restitution,String Shape) {
+    public Bird(String imgPath, float x, float y, float angle, float width, float height, float scaleFactor, float density, float friction, float restitution,String Shape,boolean isOnSlingShot,boolean isBirdUsed,float vx,float vy) {
             this.imgPath = imgPath;
             this.x = x;
             this.y = y;
@@ -43,6 +45,9 @@ public class Bird {
             this.friction = friction;
             this.restitution = restitution;
             this.shape = shape;
+            this.isBirdUsed = isBirdUsed;
+            this.vx = vx;
+            this.vy = vy;
     }
 
     public float getDensity() {
@@ -124,11 +129,11 @@ public class Bird {
     }
 
     public float getVx() {
-        return Vx;
+        return vx;
     }
 
     public float getVy() {
-        return Vy;
+        return vy;
     }
 
     public float getWidth() {
@@ -156,11 +161,11 @@ public class Bird {
     }
 
     public void setVx(float vx) {
-        Vx = vx;
+        vx = vx;
     }
 
     public void setVy(float vy) {
-        Vy = vy;
+        vy = vy;
     }
 
     public void setWidth(float width) {
@@ -173,5 +178,24 @@ public class Bird {
 
     public void setAngle(float angle) {
         this.angle = angle;
+    }
+    public void setAngle() {
+        this.angle = body.getAngle();
+    }
+
+    public boolean getIsBirdUsed() {
+        return isBirdUsed;
+    }
+
+    public void setIsBirdUsed(boolean isBirdUsed) {
+        this.isBirdUsed = isBirdUsed;
+    }
+
+    public boolean getIsOnSlingShot() {
+        return isOnSlingShot;
+    }
+
+    public void setIsOnSlingShot(boolean isOnSlingShot) {
+        this.isOnSlingShot = isOnSlingShot;
     }
 }

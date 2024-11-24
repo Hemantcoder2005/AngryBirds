@@ -1,8 +1,12 @@
 package CodeSmashers.AngryBirds.Screens;
 
 import CodeSmashers.AngryBirds.AudioManager;
+import CodeSmashers.AngryBirds.HelperClasses.Bird;
+import CodeSmashers.AngryBirds.HelperClasses.LevelCache;
+import CodeSmashers.AngryBirds.Serializer.LevelCacheSerializer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -10,6 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class PauseScreen implements Screen {
@@ -81,7 +87,29 @@ public class PauseScreen implements Screen {
         });
         return button;
     }
+    private void saveLevel(int levelNum) {
+        // moving data from isUsed to birds list
+        for (Bird bird: level.birdsUsed){
+            System.out.println(bird.getImgPath());
+            level.levelCache.getBirds().add(bird);
+        }
 
+        // Define the file location
+        FileHandle fileHandle = Gdx.files.local("assets/savedGame/" + levelNum + ".json");
+        // Create a Json instance
+        Json json = new Json();
+        json.setOutputType(JsonWriter.OutputType.json);
+        json.setSerializer(LevelCache.class, new LevelCacheSerializer());
+
+        // Convert the LevelCache object to JSON and write it to the file
+        String jsonString = json.toJson(level.levelCache);
+        jsonString = level.formatJson(jsonString);
+        fileHandle.writeString(jsonString, false); // false to overwrite the file
+
+        for (Bird bird: level.birdsUsed){
+            level.levelCache.getBirds().remove(bird);
+        }
+    }
     private void handleButtonClick(Texture texture) {
         level.mouseClick.playSoundEffect();
         if (texture == playTexture) {
@@ -91,6 +119,8 @@ public class PauseScreen implements Screen {
             level.isPaused = false;
         } else if (texture == saveTexture) {
             System.out.println("Saving");
+            saveLevel(level.levelNum);
+            System.out.println("Saved");
         } else if (texture == soundTexture) {
             AudioManager.getCurrentMusic().toggleMuteBackgroundMusic(level.game.getGlobalInputHandler().isMuted());
             soundButton.setVisible(false);

@@ -12,6 +12,7 @@ public class SurroundingsSerializer implements Json.Serializer<Surroundings> {
     public void write(Json json, Surroundings surroundings, Class knownType) {
         json.writeObjectStart();
         json.writeValue("imgPath", surroundings.getImgPath());
+        json.writeValue("damageImg",surroundings.getDamageImg());
         json.writeValue("x", surroundings.getBody().getPosition().x * PPM);
         json.writeValue("y", surroundings.getBody().getPosition().y * PPM);
         json.writeValue("type", surroundings.getType());
@@ -30,6 +31,7 @@ public class SurroundingsSerializer implements Json.Serializer<Surroundings> {
     @Override
     public Surroundings read(Json json, JsonValue jsonData, Class type) {
         String imgPath = jsonData.getString("imgPath");
+        String damageImg = jsonData.getString("damageImg");
         float x = jsonData.getFloat("x");
         float y = jsonData.getFloat("y");
         String surroundingsType = jsonData.getString("type");
@@ -42,6 +44,6 @@ public class SurroundingsSerializer implements Json.Serializer<Surroundings> {
         float restitution = jsonData.getFloat("restitution");
         float scaleFactor = jsonData.getFloat("scaleFactor");
         String shape = jsonData.getString("shape");
-        return new Surroundings(imgPath, x, y, surroundingsType, durability, width, height, angle, density, friction, restitution,scaleFactor,shape);
+        return new Surroundings(imgPath,damageImg, x, y, surroundingsType, durability, width, height, angle, density, friction, restitution,scaleFactor,shape);
     }
 }

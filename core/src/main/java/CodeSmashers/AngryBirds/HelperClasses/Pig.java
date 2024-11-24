@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 
 public class Pig {
     private String imgPath;
+    private String damageImg;
     private float x;
     private float y;
     private float width;
@@ -29,8 +30,9 @@ public class Pig {
         this.shape = shape;
     }
 
-    public Pig(String imgPath, float x, float y, float angle, float width, float height, int health, float scaleFactor, float density, float friction, float restitution,String shape) {
+    public Pig(String imgPath,String damageImg, float x, float y, float angle, float width, float height, int health, float scaleFactor, float density, float friction, float restitution,String shape) {
         this.imgPath = imgPath;
+        this.damageImg = damageImg;
         this.x = x;
         this.y = y;
         this.angle = angle;
@@ -102,6 +104,9 @@ public class Pig {
     public void setAngle(float angle) {
         this.angle = angle;
     }
+    public void setAngle() {
+        this.angle = body.getAngle();
+    }
 
     public int getHealth() {
         return health;
@@ -169,5 +174,13 @@ public class Pig {
 
     public void setBody(Body body) {
         this.body = body;
+    }
+
+    public String getDamageImg() {
+        return damageImg;
+    }
+
+    public void setDamageImg(String damageImg) {
+        this.damageImg = damageImg;
     }
 }

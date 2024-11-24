@@ -18,6 +18,10 @@ public class BirdSerializer implements Json.Serializer<Bird> {
         json.writeValue("height", bird.getHeight());
         json.writeValue("angle", bird.getAngle());
 
+        // Correctly writing vx and vy
+        json.writeValue("vx", bird.getVx());
+        json.writeValue("vy", bird.getVy());
+
         // Physics properties
         json.writeValue("scaleFactor", bird.getScaleFactor());
         json.writeValue("density", bird.getDensity());
@@ -26,6 +30,9 @@ public class BirdSerializer implements Json.Serializer<Bird> {
 
         // Shape details
         json.writeValue("shape", bird.getShape());
+        json.writeValue("isOnSlingShot", bird.getIsOnSlingShot());
+        json.writeValue("isBirdUsed", bird.getIsBirdUsed());
+
 
         json.writeObjectEnd();
     }
@@ -33,6 +40,7 @@ public class BirdSerializer implements Json.Serializer<Bird> {
     @Override
     public Bird read(Json json, JsonValue jsonData, Class type) {
         String imgPath = jsonData.getString("imgPath");
+        String damageImg = jsonData.getString("damageImg");
         float x = jsonData.getFloat("x");
         float y = jsonData.getFloat("y");
         float angle = jsonData.getFloat("angle");
@@ -43,6 +51,11 @@ public class BirdSerializer implements Json.Serializer<Bird> {
         float friction = jsonData.getFloat("friction");
         float restitution = jsonData.getFloat("restitution");
         String shape = jsonData.getString("shape");
-        return new Bird(imgPath, x, y, angle, width, height, scaleFactor, density, friction, restitution, shape);
+        boolean isOnSlingShot = jsonData.getBoolean("isOnSlingShot", false);
+        boolean isBirdUsed = jsonData.getBoolean("isBirdUsed", false);
+        float vx = jsonData.getFloat("vx", 0);
+        float vy = jsonData.getFloat("vy", 0);
+
+        return new Bird(imgPath, x, y, angle, width, height, scaleFactor, density, friction, restitution, shape, isOnSlingShot, isBirdUsed, vx, vy);
     }
 }
