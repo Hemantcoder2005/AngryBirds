@@ -192,13 +192,20 @@ public class GamePlay implements Screen {
         } else if (item instanceof Pig) {
             Pig pig = (Pig) item;
             pig.setSprite(new Sprite(texture));
+            pig.setBreakSprite(new Sprite(assetManager.getTexture(pig.getDamageImg())));
+            pig.getBreakSprite().setSize(pig.getWidth() * pig.getScaleFactor() , pig.getHeight() * pig.getScaleFactor());
             pig.getSprite().setSize(pig.getWidth() * pig.getScaleFactor() , pig.getHeight() * pig.getScaleFactor());
             pig.getSprite().setOriginCenter();
+            pig.getBreakSprite().setOriginCenter();
         } else if (item instanceof Surroundings) {
             Surroundings surroundings = (Surroundings) item;
+            surroundings.setBreakSprite(new Sprite(assetManager.getTexture(surroundings.getDamageImg())));
             surroundings.setSprite(new Sprite(texture));
             surroundings.getSprite().setSize(surroundings.getWidth() * surroundings.getScaleFactor(), surroundings.getHeight() * surroundings.getScaleFactor());
+            surroundings.getBreakSprite().setSize(surroundings.getWidth() * surroundings.getScaleFactor(), surroundings.getHeight() * surroundings.getScaleFactor());
             surroundings.getSprite().setOriginCenter();
+            surroundings.getBreakSprite().setOriginCenter();
+
         }
         slingShotX+=100;
     }
@@ -247,6 +254,7 @@ public class GamePlay implements Screen {
             createBodyForPig(pig);
         }
         for (Surroundings surroundings : levelCache.getComponents()) {
+            surroundings.setInitialDurability(surroundings.getDurability());
             createBodyForSurroundings(surroundings);
         }
         for (Bird bird : birdsUsed) {
@@ -588,7 +596,11 @@ public class GamePlay implements Screen {
 
             if (pig.getHealth() > 0) {
                 // Render alive pigs
-                Sprite sprite = pig.getSprite();
+                Sprite sprite =  pig.getSprite();;
+                if(pig.getHealth() < 50){
+                    sprite = pig.getBreakSprite();
+                }
+
                 sprite.setPosition(
                     pig.getBody().getPosition().x * PPM - sprite.getWidth() / 2,
                     pig.getBody().getPosition().y * PPM - sprite.getHeight() / 2
@@ -609,7 +621,7 @@ public class GamePlay implements Screen {
             } else {
                 // Handle dead pig with shrinking effect
                 float shrinkRate = 50f; // Shrinking rate in pixels per second
-                Sprite sprite = pig.getSprite();
+                Sprite sprite = pig.getBreakSprite();
 
                 float newSize = sprite.getWidth() - shrinkRate * Gdx.graphics.getDeltaTime();
                 if (newSize > 0) {
@@ -643,6 +655,10 @@ public class GamePlay implements Screen {
             if (surroundings.getDurability() > 0) {
                 // Render intact surroundings
                 Sprite sprite = surroundings.getSprite();
+                System.out.println((double) surroundings.getDurability()/surroundings.getInitialDurability());
+                if((double) surroundings.getDurability() /surroundings.getInitialDurability() < 0.5){
+                    sprite = surroundings.getBreakSprite();
+                }
                 sprite.setPosition(
                     surroundings.getBody().getPosition().x * PPM - sprite.getWidth() / 2,
                     surroundings.getBody().getPosition().y * PPM - sprite.getHeight() / 2

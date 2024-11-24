@@ -54,6 +54,7 @@
 	}],
 	"pigs":[{
 	"imgPath":"GamePlay/Pigs/Minion.png",
+      "damageImg": "GamePlay/Pigs/Pig_hurt.png",
 	"x":970.0001,
 	"y":189.45801,
 	"width":86,
@@ -68,6 +69,7 @@
 	},
 	{
 	"imgPath":"GamePlay/Pigs/Minion.png",
+      "damageImg": "GamePlay/Pigs/Pig_hurt.png",
 	"x":848,
 	"y":189.55885,
 	"width":86,
@@ -82,6 +84,7 @@
 	},
 	{
 	"imgPath":"GamePlay/Pigs/Minion.png",
+      "damageImg": "GamePlay/Pigs/Pig_hurt.png",
 	"x":899.83295,
 	"y":457.15765,
 	"width":86,
@@ -96,6 +99,7 @@
 	}],
 	"components":[{
 	"imgPath":"GamePlay/Surroundings/block3.png",
+      "damageImg": "GamePlay/Surroundings/ice8.png",
 	"x":907.45105,
 	"y":412.72223,
 	"type":"wood",
@@ -111,6 +115,7 @@
 	},
 	{
 	"imgPath":"GamePlay/Surroundings/ice10.png",
+      "damageImg": "GamePlay/Surroundings/ice8.png",
 	"x":784.8538,
 	"y":320.08188,
 	"type":"wood",
@@ -126,6 +131,7 @@
 	},
 	{
 	"imgPath":"GamePlay/Surroundings/ice10.png",
+      "damageImg": "GamePlay/Surroundings/ice8.png",
 	"x":1028.6707,
 	"y":320.11444,
 	"type":"wood",
@@ -141,6 +147,7 @@
 	},
 	{
 	"imgPath":"GamePlay/Surroundings/ice10.png",
+      "damageImg": "GamePlay/Surroundings/ice8.png",
 	"x":903.1722,
 	"y":278.86676,
 	"type":"wood",

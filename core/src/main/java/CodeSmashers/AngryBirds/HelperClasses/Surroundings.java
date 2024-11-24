@@ -16,7 +16,8 @@ public class Surroundings {
     private float density;
     private Body body;
     private String shape;
-
+    private Sprite BreakSprite;
+    private int initialDurability;
     public String getShape() {
         return shape;
     }
@@ -177,5 +178,21 @@ public class Surroundings {
 
     public void setDamageImg(String damageImg) {
         this.damageImg = damageImg;
+    }
+
+    public Sprite getBreakSprite() {
+        return BreakSprite;
+    }
+
+    public void setBreakSprite(Sprite breakSprite) {
+        BreakSprite = breakSprite;
+    }
+
+    public int getInitialDurability() {
+        return initialDurability;
+    }
+
+    public void setInitialDurability(int initialDurability) {
+        this.initialDurability = initialDurability;
     }
 }

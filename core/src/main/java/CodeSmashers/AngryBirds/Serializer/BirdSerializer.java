@@ -40,7 +40,6 @@ public class BirdSerializer implements Json.Serializer<Bird> {
     @Override
     public Bird read(Json json, JsonValue jsonData, Class type) {
         String imgPath = jsonData.getString("imgPath");
-        String damageImg = jsonData.getString("damageImg");
         float x = jsonData.getFloat("x");
         float y = jsonData.getFloat("y");
         float angle = jsonData.getFloat("angle");
