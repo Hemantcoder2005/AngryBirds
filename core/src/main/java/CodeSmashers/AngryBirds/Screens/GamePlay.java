@@ -112,7 +112,7 @@ public class GamePlay implements Screen {
         this.won = false;
         this.loose  = false;
         this.isBirdOnSlingShot = false;
-        this.slingshotAnchor = new Vector2((slingShotX +100) ,levelCache.getFloorY());
+        this.slingshotAnchor = new Vector2((slingShotX +200) ,levelCache.getFloorY());
         this.birdsUsed = new ArrayList<>();
         createIsBirdUsed();
         loadAllTextures();
@@ -200,6 +200,7 @@ public class GamePlay implements Screen {
             surroundings.getSprite().setSize(surroundings.getWidth() * surroundings.getScaleFactor(), surroundings.getHeight() * surroundings.getScaleFactor());
             surroundings.getSprite().setOriginCenter();
         }
+        slingShotX+=100;
     }
 
 
@@ -511,8 +512,8 @@ public class GamePlay implements Screen {
 
                     // Set the bird's initial position and velocity
                     currentBird.getBody().setTransform(
-                        slingshotAnchor.x / PPM,
-                        (levelCache.getFloorY() + (float) slingShotTexture.getHeight()) / PPM,
+                        (slingshotAnchor.x+20) / PPM,
+                        (levelCache.getFloorY() + (float) slingShotTexture.getHeight() -3) / PPM,
                         0
                     );
                     currentBirdMass = currentBird.getBody().getMass();
