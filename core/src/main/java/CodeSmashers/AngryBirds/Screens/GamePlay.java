@@ -501,29 +501,31 @@ public class GamePlay implements Screen {
                 }
             } else {
                 System.out.println("Selecting bird");
-                // Fixing the index to select the last bird in the list
-                currentBird = levelCache.getBirds().get(levelCache.getBirds().size() - 1);
+                if (!levelCache.getBirds().isEmpty()) {
+                    // Fixing the index to select the last bird in the list
+                    currentBird = levelCache.getBirds().get(levelCache.getBirds().size() - 1);
 
-                // Move the selected bird to birdsUsed and remove from levelCache.getBirds
-                birdsUsed.add(currentBird);
-                levelCache.getBirds().remove(currentBird);
+                    // Move the selected bird to birdsUsed and remove from levelCache.getBirds
+                    birdsUsed.add(currentBird);
+                    levelCache.getBirds().remove(currentBird);
 
-                // Set the bird's initial position and velocity
-                currentBird.getBody().setTransform(
-                    slingshotAnchor.x / PPM,
-                    (levelCache.getFloorY() + (float) slingShotTexture.getHeight()) / PPM,
-                    0
-                );
-                currentBirdMass = currentBird.getBody().getMass();
-                currentBird.getBody().setType(BodyDef.BodyType.KinematicBody);
-                currentBird.getBody().setLinearVelocity(0, 0);
-                currentBird.getBody().setAngularVelocity(0);
-                isBirdOnSlingShot = true;
-                birdPlayed++;
-                currentTimeMillis = System.currentTimeMillis();
-                SoundEffects.playBirdSelection();
-                currentBird.setIsOnSlingShot(true);
-                currentBird.setIsBirdUsed(true);
+                    // Set the bird's initial position and velocity
+                    currentBird.getBody().setTransform(
+                        slingshotAnchor.x / PPM,
+                        (levelCache.getFloorY() + (float) slingShotTexture.getHeight()) / PPM,
+                        0
+                    );
+                    currentBirdMass = currentBird.getBody().getMass();
+                    currentBird.getBody().setType(BodyDef.BodyType.KinematicBody);
+                    currentBird.getBody().setLinearVelocity(0, 0);
+                    currentBird.getBody().setAngularVelocity(0);
+                    isBirdOnSlingShot = true;
+                    birdPlayed++;
+                    currentTimeMillis = System.currentTimeMillis();
+                    SoundEffects.playBirdSelection();
+                    currentBird.setIsOnSlingShot(true);
+                    currentBird.setIsBirdUsed(true);
+                }
             }
         }
 
