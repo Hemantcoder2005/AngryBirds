@@ -215,8 +215,8 @@ public class GamePlay implements Screen {
         levelCache = json.fromJson(LevelCache.class, fileHandle);
         System.out.println(levelCache.getBirds().size());
         if(levelCache.getBirds().isEmpty()){
-            fileHandle.delete();
-            loadLevel(levelNum);
+//            fileHandle.delete();
+//            loadLevel(levelNum);
 
         }
     }
@@ -501,7 +501,6 @@ public class GamePlay implements Screen {
                     loose = true;
                 }
             } else {
-                System.out.println("Selecting bird");
                 if (!levelCache.getBirds().isEmpty()) {
                     // Fixing the index to select the last bird in the list
                     currentBird = levelCache.getBirds().get(levelCache.getBirds().size() - 1);
@@ -550,7 +549,6 @@ public class GamePlay implements Screen {
         // Render birds that are already launched (in birdsUsed)
         Iterator<Bird> iterator = birdsUsed.iterator();
         while (iterator.hasNext()) {
-            System.out.println("Bird is used is running.....");
             Bird bird = iterator.next();
             Sprite sprite = bird.getSprite();
             Body birdBody = bird.getBody();
