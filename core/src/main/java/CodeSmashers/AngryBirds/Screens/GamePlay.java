@@ -214,9 +214,8 @@ public class GamePlay implements Screen {
         levelCache = json.fromJson(LevelCache.class, fileHandle);
         System.out.println(levelCache.getBirds().size());
         if(levelCache.getBirds().isEmpty()){
-            fileHandle.delete();
-            loadLevel(levelNum);
-
+//            fileHandle.delete();
+//            loadLevel(levelNum);
         }
     }
     private void saveLevel(int levelNum) {
@@ -444,7 +443,7 @@ public class GamePlay implements Screen {
             stage.draw();
 
             // Uncomment to enable debug rendering
-            // debugRenderer.render(world, batch.getProjectionMatrix().cpy().scale(PPM, PPM, 0));
+             debugRenderer.render(world, batch.getProjectionMatrix().cpy().scale(PPM, PPM, 0));
         } else if (!isAnyBodyMoving || won) {
             batch.begin();
 
