@@ -121,7 +121,7 @@ public class GamePlay implements Screen {
         createWall();
         createPauseButton();
         gamePlayInput = initializeInputProcessor();
-        this.isEditing = true;
+        this.isEditing = false;
         this.isrenderTrajectory = false;
         world.setContactListener(myContactListener);
         this.PigAvailable = levelCache.getPigs().size();
@@ -222,8 +222,8 @@ public class GamePlay implements Screen {
         levelCache = json.fromJson(LevelCache.class, fileHandle);
         System.out.println(levelCache.getBirds().size());
         if(levelCache.getBirds().isEmpty()){
-//            fileHandle.delete();
-//            loadLevel(levelNum);
+            fileHandle.delete();
+            loadLevel(levelNum);
 
         }
     }

@@ -2,6 +2,20 @@
 	"background":"GamePlay/Levels/level2.png",
 	"floorY":100,
 	"birds":[{
+      "imgPath":"GamePlay/Birds/Blackbird.png",
+      "x":50,
+      "y":196,
+      "width":50,
+      "height":60,
+      "angle":0.5,
+      "scaleFactor":0.8,
+      "density":0.8,
+      "friction":1,
+      "restitution":0.7,
+      "shape":"circle",
+      "isOnSlingShot":false,
+      "isBirdUsed":false
+    },{
 	"imgPath":"GamePlay/Birds/angry_bird.png",
 	"x":110,
 	"y":180,
@@ -48,8 +62,8 @@
 	"friction":1,
 	"restitution":0.6,
 	"shape":"circle",
-	"damageImg":null
-	},
+      "damageImg": "GamePlay/Pigs/Pig_hurt.png"
+    },
 	{
 	"imgPath":"GamePlay/Pigs/Pig.png",
 	"x":996.00006,
@@ -63,8 +77,8 @@
 	"friction":1,
 	"restitution":0.6,
 	"shape":"circle",
-	"damageImg":null
-	},
+      "damageImg": "GamePlay/Pigs/Pig_hurt.png"
+    },
 	{
 	"imgPath":"GamePlay/Pigs/Minion.png",
 	"x":1100.0001,
@@ -78,8 +92,8 @@
 	"friction":1,
 	"restitution":0.6,
 	"shape":"circle",
-	"damageImg":null
-	},
+      "damageImg": "GamePlay/Pigs/Minion_hurt.png"
+    },
 	{
 	"imgPath":"GamePlay/Pigs/Minion.png",
 	"x":729.9805,
@@ -93,8 +107,8 @@
 	"friction":1,
 	"restitution":0.6,
 	"shape":"circle",
-	"damageImg":null
-	},
+      "damageImg": "GamePlay/Pigs/Minion_hurt.png"
+    },
 	{
 	"imgPath":"GamePlay/Pigs/old_pig.png",
 	"x":920,
@@ -108,15 +122,15 @@
 	"friction":1,
 	"restitution":0.6,
 	"shape":"circle",
-	"damageImg":null
-	}],
+      "damageImg": "GamePlay/Pigs/Pig_hurt_4.png"
+    }],
 	"components":[{
 	"imgPath":"GamePlay/Surroundings/ice3.png",
-	"damageImg":null,
+      "damageImg": "GamePlay/Surroundings/ice3_broken.png",
 	"x":921.0808,
 	"y":166.71236,
 	"type":"wood",
-	"durability":10,
+	"durability":1500,
 	"width":84,
 	"height":42,
 	"angle":4.6646863E-5,
@@ -128,11 +142,11 @@
 	},
 	{
 	"imgPath":"GamePlay/Surroundings/stone5.png",
-	"damageImg":null,
+      "damageImg": "GamePlay/Surroundings/stone5_broken.png",
 	"x":731.68616,
 	"y":198.03181,
 	"type":"wood",
-	"durability":10,
+	"durability":2500,
 	"width":21,
 	"height":200,
 	"angle":0.008293799,
@@ -144,11 +158,11 @@
 	},
 	{
 	"imgPath":"GamePlay/Surroundings/stone5.png",
-	"damageImg":null,
+      "damageImg": "GamePlay/Surroundings/stone5_broken.png",
 	"x":1102,
 	"y":198.03348,
 	"type":"wood",
-	"durability":10,
+	"durability":2500,
 	"width":21,
 	"height":200,
 	"angle":-4.2434968E-4,
@@ -160,11 +174,11 @@
 	},
 	{
 	"imgPath":"GamePlay/Surroundings/WoodBlock1.jpg",
-	"damageImg":null,
+      "damageImg": "GamePlay/Surroundings/WoodBlock1_broken.png",
 	"x":838.00006,
 	"y":269.8433,
 	"type":"wood",
-	"durability":10000000,
+	"durability":2000,
 	"width":150,
 	"height":150,
 	"angle":0,
@@ -176,11 +190,11 @@
 	},
 	{
 	"imgPath":"GamePlay/Surroundings/WoodBlock1.jpg",
-	"damageImg":null,
+      "damageImg": "GamePlay/Surroundings/WoodBlock1_broken.png",
 	"x":1000,
 	"y":269.8433,
 	"type":"wood",
-	"durability":10,
+	"durability":2000,
 	"width":150,
 	"height":150,
 	"angle":0,
