@@ -29,7 +29,7 @@
 	{
 	"imgPath":"GamePlay/Birds/Chuck.png",
 	"x":160,
-	"y":155,
+	"y":200,
 	"width":50,
 	"height":50,
 	"angle":0,
@@ -37,7 +37,7 @@
 	"density":0.5,
 	"friction":1,
 	"restitution":0.8,
-	"shape":"circle"
+	"shape":"triangle"
 	},
 	{
 	"imgPath":"GamePlay/Birds/angry_bird.png",
@@ -54,6 +54,7 @@
 	}],
 	"pigs":[{
 	"imgPath":"GamePlay/Pigs/Minion.png",
+      "damageImg": "GamePlay/Pigs/Pig_hurt.png",
 	"x":970.0001,
 	"y":189.45801,
 	"width":86,
@@ -68,6 +69,7 @@
 	},
 	{
 	"imgPath":"GamePlay/Pigs/Minion.png",
+      "damageImg": "GamePlay/Pigs/Pig_hurt.png",
 	"x":848,
 	"y":189.55885,
 	"width":86,
@@ -82,6 +84,7 @@
 	},
 	{
 	"imgPath":"GamePlay/Pigs/Minion.png",
+      "damageImg": "GamePlay/Pigs/Pig_hurt.png",
 	"x":899.83295,
 	"y":457.15765,
 	"width":86,
@@ -96,10 +99,11 @@
 	}],
 	"components":[{
 	"imgPath":"GamePlay/Surroundings/block3.png",
+      "damageImg": "GamePlay/Surroundings/ice8.png",
 	"x":907.45105,
 	"y":412.72223,
 	"type":"wood",
-	"durability":5,
+	"durability":2000,
 	"width":100,
 	"height":10,
 	"angle":0,
@@ -111,10 +115,11 @@
 	},
 	{
 	"imgPath":"GamePlay/Surroundings/ice10.png",
+      "damageImg": "GamePlay/Surroundings/ice8.png",
 	"x":784.8538,
 	"y":320.08188,
 	"type":"wood",
-	"durability":5,
+	"durability":2000,
 	"width":21,
 	"height":165,
 	"angle":0,
@@ -126,10 +131,11 @@
 	},
 	{
 	"imgPath":"GamePlay/Surroundings/ice10.png",
+      "damageImg": "GamePlay/Surroundings/ice8.png",
 	"x":1028.6707,
 	"y":320.11444,
 	"type":"wood",
-	"durability":7,
+	"durability":2000,
 	"width":21,
 	"height":165,
 	"angle":0,
@@ -141,10 +147,11 @@
 	},
 	{
 	"imgPath":"GamePlay/Surroundings/ice10.png",
+      "damageImg": "GamePlay/Surroundings/ice8.png",
 	"x":903.1722,
 	"y":278.86676,
 	"type":"wood",
-	"durability":7,
+	"durability":2000,
 	"width":21,
 	"height":165,
 	"angle":0,

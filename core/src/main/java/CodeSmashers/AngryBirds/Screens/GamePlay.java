@@ -112,7 +112,7 @@ public class GamePlay implements Screen {
         this.won = false;
         this.loose  = false;
         this.isBirdOnSlingShot = false;
-        this.slingshotAnchor = new Vector2((slingShotX +100) ,levelCache.getFloorY());
+        this.slingshotAnchor = new Vector2((slingShotX +200) ,levelCache.getFloorY());
         this.birdsUsed = new ArrayList<>();
         createIsBirdUsed();
         loadAllTextures();
@@ -192,14 +192,22 @@ public class GamePlay implements Screen {
         } else if (item instanceof Pig) {
             Pig pig = (Pig) item;
             pig.setSprite(new Sprite(texture));
+            pig.setBreakSprite(new Sprite(assetManager.getTexture(pig.getDamageImg())));
+            pig.getBreakSprite().setSize(pig.getWidth() * pig.getScaleFactor() , pig.getHeight() * pig.getScaleFactor());
             pig.getSprite().setSize(pig.getWidth() * pig.getScaleFactor() , pig.getHeight() * pig.getScaleFactor());
             pig.getSprite().setOriginCenter();
+            pig.getBreakSprite().setOriginCenter();
         } else if (item instanceof Surroundings) {
             Surroundings surroundings = (Surroundings) item;
+            surroundings.setBreakSprite(new Sprite(assetManager.getTexture(surroundings.getDamageImg())));
             surroundings.setSprite(new Sprite(texture));
             surroundings.getSprite().setSize(surroundings.getWidth() * surroundings.getScaleFactor(), surroundings.getHeight() * surroundings.getScaleFactor());
+            surroundings.getBreakSprite().setSize(surroundings.getWidth() * surroundings.getScaleFactor(), surroundings.getHeight() * surroundings.getScaleFactor());
             surroundings.getSprite().setOriginCenter();
+            surroundings.getBreakSprite().setOriginCenter();
+
         }
+        slingShotX+=100;
     }
 
 
@@ -216,6 +224,7 @@ public class GamePlay implements Screen {
         if(levelCache.getBirds().isEmpty()){
 //            fileHandle.delete();
 //            loadLevel(levelNum);
+
         }
     }
     private void saveLevel(int levelNum) {
@@ -245,6 +254,7 @@ public class GamePlay implements Screen {
             createBodyForPig(pig);
         }
         for (Surroundings surroundings : levelCache.getComponents()) {
+            surroundings.setInitialDurability(surroundings.getDurability());
             createBodyForSurroundings(surroundings);
         }
         for (Bird bird : birdsUsed) {
@@ -443,7 +453,7 @@ public class GamePlay implements Screen {
             stage.draw();
 
             // Uncomment to enable debug rendering
-             debugRenderer.render(world, batch.getProjectionMatrix().cpy().scale(PPM, PPM, 0));
+            // debugRenderer.render(world, batch.getProjectionMatrix().cpy().scale(PPM, PPM, 0));
         } else if (!isAnyBodyMoving || won) {
             batch.begin();
 
@@ -499,7 +509,6 @@ public class GamePlay implements Screen {
                     loose = true;
                 }
             } else {
-                System.out.println("Selecting bird");
                 if (!levelCache.getBirds().isEmpty()) {
                     // Fixing the index to select the last bird in the list
                     currentBird = levelCache.getBirds().get(levelCache.getBirds().size() - 1);
@@ -510,8 +519,8 @@ public class GamePlay implements Screen {
 
                     // Set the bird's initial position and velocity
                     currentBird.getBody().setTransform(
-                        slingshotAnchor.x / PPM,
-                        (levelCache.getFloorY() + (float) slingShotTexture.getHeight()) / PPM,
+                        (slingshotAnchor.x+20) / PPM,
+                        (levelCache.getFloorY() + (float) slingShotTexture.getHeight() -3) / PPM,
                         0
                     );
                     currentBirdMass = currentBird.getBody().getMass();
@@ -548,7 +557,6 @@ public class GamePlay implements Screen {
         // Render birds that are already launched (in birdsUsed)
         Iterator<Bird> iterator = birdsUsed.iterator();
         while (iterator.hasNext()) {
-            System.out.println("Bird is used is running.....");
             Bird bird = iterator.next();
             Sprite sprite = bird.getSprite();
             Body birdBody = bird.getBody();
@@ -588,7 +596,11 @@ public class GamePlay implements Screen {
 
             if (pig.getHealth() > 0) {
                 // Render alive pigs
-                Sprite sprite = pig.getSprite();
+                Sprite sprite =  pig.getSprite();;
+                if(pig.getHealth() < 50){
+                    sprite = pig.getBreakSprite();
+                }
+
                 sprite.setPosition(
                     pig.getBody().getPosition().x * PPM - sprite.getWidth() / 2,
                     pig.getBody().getPosition().y * PPM - sprite.getHeight() / 2
@@ -609,7 +621,7 @@ public class GamePlay implements Screen {
             } else {
                 // Handle dead pig with shrinking effect
                 float shrinkRate = 50f; // Shrinking rate in pixels per second
-                Sprite sprite = pig.getSprite();
+                Sprite sprite = pig.getBreakSprite();
 
                 float newSize = sprite.getWidth() - shrinkRate * Gdx.graphics.getDeltaTime();
                 if (newSize > 0) {
@@ -643,6 +655,10 @@ public class GamePlay implements Screen {
             if (surroundings.getDurability() > 0) {
                 // Render intact surroundings
                 Sprite sprite = surroundings.getSprite();
+                System.out.println((double) surroundings.getDurability()/surroundings.getInitialDurability());
+                if((double) surroundings.getDurability() /surroundings.getInitialDurability() < 0.5){
+                    sprite = surroundings.getBreakSprite();
+                }
                 sprite.setPosition(
                     surroundings.getBody().getPosition().x * PPM - sprite.getWidth() / 2,
                     surroundings.getBody().getPosition().y * PPM - sprite.getHeight() / 2

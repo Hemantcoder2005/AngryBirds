@@ -31,7 +31,7 @@ public class SurroundingsSerializer implements Json.Serializer<Surroundings> {
     @Override
     public Surroundings read(Json json, JsonValue jsonData, Class type) {
         String imgPath = jsonData.getString("imgPath");
-        String damageImg = jsonData.getString("damageImg");
+        String damageImg = jsonData.getString("damageImg","Gameplay/Surroundings/ice8.png");
         float x = jsonData.getFloat("x");
         float y = jsonData.getFloat("y");
         String surroundingsType = jsonData.getString("type");

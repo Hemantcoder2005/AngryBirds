@@ -75,24 +75,20 @@ public class MyContactListener implements ContactListener {
     private void handleBirdPigCollision(Fixture pigFixture, float impulseMagnitude) {
         SoundEffects.playBirdCollision();
         SoundEffects.playPigCollide();
-        System.out.println("Bird and pig are in contact.");
         reduceHealth(pigFixture, impulseMagnitude);
     }
 
     private void handleBirdBlockCollision(Fixture blockFixture, float impulseMagnitude) {
         SoundEffects.playBirdCollision();
         SoundEffects.playWoodCollision();
-        System.out.println("Bird and block are in contact.");
         reduceHealth(blockFixture, impulseMagnitude);
     }
 
     private void handlePigBlockCollision(Fixture blockFixture, float impulseMagnitude) {
-        System.out.println("Pig and block are in contact.");
         reduceHealth(blockFixture, impulseMagnitude);
     }
 
     private void handlePigPigCollision(Fixture pigFixtureA, Fixture pigFixtureB, float impulseMagnitude) {
-        System.out.println("Two pigs collided.");
         reduceHealth(pigFixtureA, impulseMagnitude);
         reduceHealth(pigFixtureB, impulseMagnitude);
     }

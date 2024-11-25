@@ -21,7 +21,7 @@ public class Pig {
     private float restitution;
     private float scaleFactor;
     private String shape;
-
+    private Sprite BreakSprite;
     public String getShape() {
         return shape;
     }
@@ -32,6 +32,7 @@ public class Pig {
 
     public Pig(String imgPath,String damageImg, float x, float y, float angle, float width, float height, int health, float scaleFactor, float density, float friction, float restitution,String shape) {
         this.imgPath = imgPath;
+        System.out.println("damagePig = "+ damageImg);
         this.damageImg = damageImg;
         this.x = x;
         this.y = y;
@@ -182,5 +183,13 @@ public class Pig {
 
     public void setDamageImg(String damageImg) {
         this.damageImg = damageImg;
+    }
+
+    public Sprite getBreakSprite() {
+        return BreakSprite;
+    }
+
+    public void setBreakSprite(Sprite breakSprite) {
+        BreakSprite = breakSprite;
     }
 }

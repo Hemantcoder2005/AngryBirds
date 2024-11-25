@@ -30,7 +30,7 @@ public class PigSerializer implements Json.Serializer<Pig> {
     @Override
     public Pig read(Json json, JsonValue jsonData, Class type) {
         String imgPath = jsonData.getString("imgPath");
-        String damageImg = jsonData.getString("damageImg");
+        String damageImg = jsonData.getString("damageImg","GamePlay/Pigs/Pig_hurt.png");
         float x = jsonData.getFloat("x");
         float y = jsonData.getFloat("y");
         float width = jsonData.getFloat("width");
