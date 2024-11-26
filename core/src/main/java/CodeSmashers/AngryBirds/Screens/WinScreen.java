@@ -82,11 +82,11 @@ public class WinScreen implements Screen {
             if (level.levelNum == level.game.getAssets().levels) {
                 level.game.getState().switchScreen(new LevelSelector(level.game));
             } else {
-                level.game.getState().switchScreen(new GamePlay(level.game, level.levelNum + 1));
+                level.game.getState().switchScreen(new GamePlay(level.game, level.levelNum + 1,false));
             }
         }
          else if (texture == replayTexture) {
-            level.game.getState().switchScreen(new GamePlay(level.game, level.levelNum));
+            level.game.getState().switchScreen(new GamePlay(level.game, level.levelNum,false));
         }
     }
 

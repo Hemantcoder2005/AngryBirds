@@ -88,27 +88,34 @@ public class PauseScreen implements Screen {
         return button;
     }
     private void saveLevel(int levelNum) {
+        if(level.create) {
+            level.saveLevel(levelNum);
+        }
+        else {
         // moving data from isUsed to birds list
         for (Bird bird: level.birdsUsed){
             System.out.println(bird.getImgPath());
             level.levelCache.getBirds().add(bird);
         }
+        FileHandle fileHandle;
 
-        // Define the file location
-        FileHandle fileHandle = Gdx.files.local("assets/savedGame/" + levelNum + ".json");
-        // Create a Json instance
-        Json json = new Json();
-        json.setOutputType(JsonWriter.OutputType.json);
-        json.setSerializer(LevelCache.class, new LevelCacheSerializer());
 
-        // Convert the LevelCache object to JSON and write it to the file
-        String jsonString = json.toJson(level.levelCache);
-        jsonString = level.formatJson(jsonString);
-        fileHandle.writeString(jsonString, false); // false to overwrite the file
+            fileHandle = Gdx.files.local("assets/savedGame/" + levelNum + ".json");
 
-        for (Bird bird: level.birdsUsed){
-            level.levelCache.getBirds().remove(bird);
+            // Create a Json instance
+            Json json = new Json();
+            json.setOutputType(JsonWriter.OutputType.json);
+            json.setSerializer(LevelCache.class, new LevelCacheSerializer());
+
+            // Convert the LevelCache object to JSON and write it to the file
+            String jsonString = json.toJson(level.levelCache);
+            jsonString = level.formatJson(jsonString);
+            fileHandle.writeString(jsonString, false);
+            for (Bird bird: level.birdsUsed){
+                level.levelCache.getBirds().remove(bird);
+            }
         }
+
     }
     private void handleButtonClick(Texture texture) {
         level.mouseClick.playSoundEffect();
@@ -132,13 +139,14 @@ public class PauseScreen implements Screen {
         } else if (texture == backTexture) {
             level.game.getState().switchScreen(new LevelSelector(level.game));
         } else if (texture == nextTexture) {
-            if (level.levelNum == level.game.getAssets().levels) {
+            if (level.levelNum == level.game.getAssets().levels-1) {
                 level.game.getState().switchScreen(new LevelSelector(level.game));
             } else {
-                level.game.getState().switchScreen(new GamePlay(level.game, level.levelNum + 1));
+                level.game.getState().switchScreen(new GamePlay(level.game, level.levelNum + 1,false));
             }
         } else if (texture == replayTexture) {
-            level.game.getState().switchScreen(new GamePlay(level.game, level.levelNum));
+            if(level.create)level.game.getState().switchScreen(new GamePlay(level.game, level.levelNum,true));
+            else level.game.getState().switchScreen(new GamePlay(level.game, level.levelNum,false));
         }
     }
 

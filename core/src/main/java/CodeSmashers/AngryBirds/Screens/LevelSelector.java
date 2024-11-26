@@ -78,7 +78,7 @@ public class LevelSelector implements Screen {
         Table buttonTable = new Table();
         buttonTable.left();
 
-        for (int i = 1; i <= levelCount; i++) {
+        for (int i = 1; i <= levelCount-1; i++) {
             String levelKey = "level" + i;
             Level level = assetManager.LevelChart.get(levelKey);
             boolean isCompleted = level.isCompleted();
@@ -97,6 +97,9 @@ public class LevelSelector implements Screen {
                 createDisabledLevelButton(buttonTable, texturePath + "b.png", i);
             }
         }
+
+        // Creating create button to make own level
+        createLevelButton(buttonTable,BASE_DIR+ "create.png",levelCount ,false);
 
         ScrollPane scrollPane = new ScrollPane(buttonTable);
         scrollPane.setSize(Gdx.graphics.getWidth(), LEVEL_BUTTON_SIZE + 60);
@@ -130,8 +133,12 @@ public class LevelSelector implements Screen {
         levelButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                System.out.println("Level selected in levelSelector"+levelIndex);
                 mouseClick.playSoundEffect();
-                game.getState().switchScreen(new GamePlay(game, levelIndex));
+                if(levelIndex == assetManager.levels){
+                    game.getState().switchScreen(new GamePlay(game, levelIndex,true));
+                }
+                else game.getState().switchScreen(new GamePlay(game, levelIndex,false));
             }
         });
     }
@@ -150,7 +157,7 @@ public class LevelSelector implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 mouseClick.playSoundEffect();
-                game.getState().switchScreen(new GamePlay(game, levelIndex));
+                game.getState().switchScreen(new GamePlay(game, levelIndex,false));
             }
         });
     }

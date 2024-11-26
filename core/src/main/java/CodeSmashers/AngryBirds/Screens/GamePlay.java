@@ -85,12 +85,13 @@ public class GamePlay implements Screen {
     public ArrayList<Bird> birdsUsed;
     public boolean isAnyBodyMoving = false;
     private float threshold = 5.0f;
-
+    public boolean create;
     // Sounds
     public SoundEffects soundEffects;
 
-    public GamePlay(Main game, int levelNumber) {
+    public GamePlay(Main game, int levelNumber,boolean create) {
         this.levelNum = levelNumber;
+        this.create = create;
         shapeRenderer = new ShapeRenderer();
         this.game = game;
         this.assetManager = game.getAssets();
@@ -107,7 +108,7 @@ public class GamePlay implements Screen {
         this.pause = new PauseScreen(this);
         this.mouseClick = new AudioPlayer("mouseClicked.wav", game.getAssets(), true);
         this.stage = new Stage(new ScreenViewport());
-        this.font = new BitmapFont();  // Or you can use a custom font file
+        this.font = new BitmapFont();
         this.layout = new GlyphLayout();
         this.won = false;
         this.loose  = false;
@@ -121,7 +122,8 @@ public class GamePlay implements Screen {
         createWall();
         createPauseButton();
         gamePlayInput = initializeInputProcessor();
-        this.isEditing = true;
+        if(create) this.isEditing = true;
+        else this.isEditing = false;
         this.isrenderTrajectory = false;
         world.setContactListener(myContactListener);
         this.PigAvailable = levelCache.getPigs().size();
@@ -212,23 +214,34 @@ public class GamePlay implements Screen {
 
 
     private void loadLevel(int levelNum) {
-        FileHandle fileHandle = Gdx.files.local("assets/savedGame/" + levelNum + ".json");
-        if(!fileHandle.exists()){
-            System.out.println("No saved Game found....Level reset");
-            fileHandle = Gdx.files.local("assets/cache/" + levelNum + ".json");
+        FileHandle fileHandle;
+        System.out.println("No.of levels= "+assetManager.levels);
+        if(create){
+            fileHandle = Gdx.files.local("assets/cache/create.json");
+        }else {
+            fileHandle = Gdx.files.local("assets/savedGame/" + levelNum + ".json");
+            if (!fileHandle.exists()) {
+                System.out.println("No saved Game found....Level reset");
+                fileHandle = Gdx.files.local("assets/cache/" + levelNum + ".json");
+            }
         }
         Json json = new Json();
         json.setSerializer(LevelCache.class, new LevelCacheSerializer());
         levelCache = json.fromJson(LevelCache.class, fileHandle);
         System.out.println(levelCache.getBirds().size());
         if(levelCache.getBirds().isEmpty()){
-//            fileHandle.delete();
-//            loadLevel(levelNum);
+            fileHandle.delete();
+            loadLevel(levelNum);
 
         }
     }
-    private void saveLevel(int levelNum) {
+    public void saveLevel(int levelNum) {
         // Define the file location
+        if(create){
+            assetManager.levels++;
+            assetManager.LevelChart.put("level"+levelNum,new Level(false,0)); // pls lock this level after TA see
+            assetManager.saveUserLevels();
+        }
         FileHandle fileHandle = Gdx.files.local("assets/cache/" + levelNum + ".json");
         // Create a Json instance
         Json json = new Json();
@@ -442,6 +455,7 @@ public class GamePlay implements Screen {
             scaledFont.getData().setScale(2.0f);
 
             String levelText = "Level: " + levelNum;
+            if(create)levelText = "Creating "+ levelText;
             layout.setText(scaledFont, levelText);
 
             float textX = (Gdx.graphics.getWidth() - layout.width) / 2;

@@ -67,7 +67,7 @@ public class LooseScreen implements Screen {
             level.game.getState().switchScreen(new LevelSelector(level.game));
         }
         else if (texture == replayTexture) {
-            level.game.getState().switchScreen(new GamePlay(level.game, level.levelNum));
+            level.game.getState().switchScreen(new GamePlay(level.game, level.levelNum,false));
         }
     }
 
