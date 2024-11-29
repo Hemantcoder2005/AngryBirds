@@ -1,16 +1,15 @@
 buildscript {
   repositories {
     mavenCentral()
-    maven { url 'https://s01.oss.sonatype.org' }
-    gradlePluginPortal()
-    mavenLocal()
     google()
+    gradlePluginPortal()
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
+    mavenLocal()
   }
   dependencies {
+    // Example Gradle plugin dependency (if needed)
     classpath "org.docstr:gwt-gradle-plugin:$gwtPluginVersion"
-
   }
 }
 
@@ -18,59 +17,66 @@ allprojects {
   apply plugin: 'eclipse'
   apply plugin: 'idea'
 
-  ext{
+  ext {
     gdxVideo = '1.3.2-SNAPSHOT'
+    appName = 'AngryBirds'
+    javaVersion = JavaVersion.VERSION_11
   }
-  // This allows you to "Build and run using IntelliJ IDEA", an option in IDEA's Settings.
-  idea {
-    module {
-      outputDir file('build/classes/java/main')
-      testOutputDir file('build/classes/java/test')
-    }
+
+  repositories {
+    mavenCentral()
+    google()
+    maven { url 'https://jitpack.io' }
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+    maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
+    mavenLocal()
   }
 }
 
-configure(subprojects) {
+subprojects {
   apply plugin: 'java-library'
-  sourceCompatibility = 11
 
-  // From https://lyze.dev/2021/04/29/libGDX-Internal-Assets-List/
-  // The article can be helpful when using assets.txt in your project.
+  sourceCompatibility = rootProject.ext.javaVersion
+  targetCompatibility = rootProject.ext.javaVersion
+
+  dependencies {
+    // JUnit 5 dependencies
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
+
+    // Mockito dependencies
+    testImplementation 'org.mockito:mockito-core:4.0.0'
+    testImplementation 'org.mockito:mockito-inline:4.0.0'
+  }
+
+  // Ensure all tests run on the JUnit 5 platform
+  tasks.withType(Test) {
+    useJUnitPlatform()
+  }
+
+  // Task to generate asset list for internal usage (optional)
   tasks.register('generateAssetList') {
     inputs.dir("${project.rootDir}/assets/")
-    // projectFolder/assets
     File assetsFolder = new File("${project.rootDir}/assets/")
-    // projectFolder/assets/assets.txt
     File assetsFile = new File(assetsFolder, "assets.txt")
-    // delete that file in case we've already created it
     assetsFile.delete()
 
-    // iterate through all files inside that folder
-    // convert it to a relative path
-    // and append it to the file assets.txt
     fileTree(assetsFolder).collect { assetsFolder.relativePath(it) }.each {
       assetsFile.append(it + "\n")
     }
   }
   processResources.dependsOn 'generateAssetList'
+}
 
-  compileJava {
-    options.incremental = true
+// Additional configuration for specific subprojects
+project(':core') {
+  // Specific dependencies or configurations for core module if needed
+}
+
+// Eclipse configuration
+eclipse {
+  project {
+    name = "${rootProject.ext.appName}-parent"
   }
 }
 
-subprojects {
-  version = '$projectVersion'
-  ext.appName = 'AngryBirds'
-  repositories {
-    mavenCentral()
-    maven { url 'https://s01.oss.sonatype.org' }
-    // You may want to remove the following line if you have errors downloading dependencies.
-    mavenLocal()
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-    maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
-    maven { url 'https://jitpack.io' }
-  }
-}
-
-eclipse.project.name = 'AngryBirds' + '-parent'
