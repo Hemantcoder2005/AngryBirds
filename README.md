@@ -77,7 +77,7 @@ The pause menu is accessible during gameplay and includes options to:
 
 ## Demo Video  
 
-<iframe width="560" height="315" src="https://drive.google.com/file/d/1r9K2uhwPad_tmGyO_PaNckeegQKWmjoW/preview" frameborder="0" allowfullscreen></iframe>
+[Watch Demo](https://drive.google.com/file/d/1r9K2uhwPad_tmGyO_PaNckeegQKWmjoW/preview)
 
 ---
 
